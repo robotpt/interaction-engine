@@ -1,0 +1,48 @@
+import unittest
+from interfaces.planner import Planner
+
+
+class TestPlanner(unittest.TestCase):
+
+    def test_order_of_input_plan(self):
+        possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
+        s = Planner(possible_plans)
+        s.new_plan(possible_plans)
+        for p in possible_plans:
+            self.assertEqual(
+                p,
+                s.pop_plan()
+            )
+
+    def test_insert_into_plan(self):
+        possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
+        s = Planner(possible_plans)
+        for p in possible_plans[::-1]:
+            s.insert_into_plan(p)
+        for p in possible_plans:
+            self.assertEqual(
+                p,
+                s.pop_plan()
+            )
+        s.insert_into_plan(possible_plans)
+        for p in possible_plans:
+            self.assertEqual(
+                p,
+                s.pop_plan()
+            )
+
+    def test_invalid_plans(self):
+        possible_plans = 'the only true plan'
+        s = Planner(possible_plans)
+        invalid_plans = [1, 2, 3, 't', 'h', 'e', None, 'foobar', int, input]
+        for p in invalid_plans:
+            self.assertRaises(
+                ValueError,
+                s.insert_into_plan,
+                p
+            )
+            self.assertRaises(
+                ValueError,
+                s.new_plan,
+                p
+            )
