@@ -1,8 +1,7 @@
 import unittest
-import csv
 import os
 
-from text_populator import add_variation
+from text_populator.variety_populator import VarietyPopulator
 
 file1_path = 'file1.csv'
 file1_contents = """
@@ -51,7 +50,7 @@ def delete_file(path):
     os.remove(path)
 
 
-class TestTextPopulator(unittest.TestCase):
+class TestVarietyPopulator(unittest.TestCase):
 
     def setUp(self):
         for path, contents in files:
@@ -61,8 +60,57 @@ class TestTextPopulator(unittest.TestCase):
         for path, _ in files:
             delete_file(path)
 
+    def test_get_replacement(self):
+        vp = VarietyPopulator(file1_path)
+        num_entries = vp.get_num_variations('greeting')
+        self.assertEqual(
+            3,
+            num_entries
+        )
+        entries = []
+        for i in range(num_entries):
+            entries.append(vp.get_replacement(
+                'greeting',
+                index=i,
+            ))
+
+        for _ in range(100):
+            self.assertTrue(
+                vp.get_replacement('greeting') in entries
+            )
+
+    def test_wrap_index_error(self):
+
+        vp = VarietyPopulator(file1_path)
+        num_entries = vp.get_num_variations('greeting')
+        entries = []
+        for i in range(num_entries):
+            entries.append(vp.get_replacement(
+                'greeting',
+                index=i,
+            ))
+
+        for i in range(100):
+            self.assertEqual(
+                entries[i % num_entries],
+                vp.get_replacement(
+                    'greeting',
+                    index=i,
+                    is_wrap_index=True,
+                )
+            )
+
+        for i in range(num_entries + 1, 100):
+            self.assertRaises(
+                IndexError,
+                vp.get_replacement,
+                'greeting',
+                index=i,
+                is_wrap_index=False,
+            )
+
     def test_create_dict_from_file(self):
-        variation_dict = add_variation.create_dict(file1_path)
+        variation_dict = VarietyPopulator._create_dict(file1_path)
 
         self.assertTrue('Code' not in variation_dict)
         self.assertTrue('Text' not in variation_dict)
@@ -83,13 +131,13 @@ class TestTextPopulator(unittest.TestCase):
 
     def test_create_dict_from_multiple_files(self):
 
-        variation_dict1 = add_variation.create_dict([file1_path, file2_path])
+        variation_dict1 = VarietyPopulator._create_dict([file1_path, file2_path])
 
-        variation_dict2 = add_variation.create_dict(file1_path)
-        variation_dict2 = add_variation.create_dict(file2_path, variation_dict2)
+        variation_dict2 = VarietyPopulator._create_dict(file1_path)
+        variation_dict2 = VarietyPopulator._create_dict(file2_path, variation_dict2)
 
-        variation_dict3 = add_variation.create_dict(file2_path)
-        variation_dict3 = add_variation.create_dict(file1_path, variation_dict3)
+        variation_dict3 = VarietyPopulator._create_dict(file2_path)
+        variation_dict3 = VarietyPopulator._create_dict(file1_path, variation_dict3)
 
         for vd in [variation_dict1, variation_dict2, variation_dict3]:
 
@@ -103,6 +151,6 @@ class TestTextPopulator(unittest.TestCase):
     def test_duplicate_items(self):
         self.assertRaises(
             ValueError,
-            add_variation.create_dict,
+            VarietyPopulator._create_dict,
             duplicate_entry_path
         )
