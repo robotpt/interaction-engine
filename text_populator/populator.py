@@ -5,71 +5,95 @@ from text_populator.variety_populator import VarietyPopulator
 from text_populator.database_populator import DatabasePopulator
 
 
-# TODO: Make a TextPopulator class and make it testdriven
+# TODO: Move kwargs handling inside of each populator class
+# TODO:
+# TODO: Test TextPopulator
 
 
-def parenthetic_processor(
-        text,
-        fn,
-        open_symbol='{',
-        closed_symbol='}',
-):
-    open_parenthesis_stack = []
+class TextPopulator:
 
-    itr = 0
-    while itr < len(text):
+    def __init__(
+            self,
+            variety_populator,
+            database_populator,
+    ):
+        self._variety_populator = variety_populator
+        self._database_populator = database_populator
 
-        if text[itr:itr+len(open_symbol)] == open_symbol:
-            open_parenthesis_stack.append(itr)
+    def run(self, text):
+        return TextPopulator._parenthetic_processor(
+            text,
+            self._handle_string_input,
+            open_symbol='{',
+            closed_symbol='}',
+        )
 
-        elif text[itr:itr+len(closed_symbol)] == closed_symbol:
-            if len(open_parenthesis_stack) == 0:
-                raise ValueError("Not all closing symbols matched")
+    def _handle_string_input(self, text):
+        kwargs = ast.literal_eval(text)
 
-            start_idx = open_parenthesis_stack.pop()
-            end_idx = itr+1
-            segment = text[start_idx:end_idx]
-            replacement = fn(segment)
+        if 'var' in kwargs:
 
-            text = "".join((
-                text[:start_idx],
-                replacement,
-                text[end_idx:]
-            ))
-            itr = start_idx
+            handle = kwargs['var']
 
-        itr += 1
-    if len(open_parenthesis_stack) == 0:
-        return text
-    else:
-        raise ValueError("Not all open symbols matched")
+            if 'index' in kwargs:
+                return self._variety_populator.get_replacement(
+                    handle, index=kwargs['index'])
+            else:
+                return self._variety_populator.get_replacement(handle)
 
+        elif 'db' in kwargs:
 
-def run_populator(text):
-    kwargs = ast.literal_eval(text)
-    if 'var' in kwargs:
-        vp = VarietyPopulator(variation_file)
-        if 'index' in kwargs:
-            return vp.get_replacement(
-                kwargs['var'], index=kwargs['index'])
+            key = kwargs['db']
+
+            if 'post-op' in kwargs:
+                fn = kwargs['post-op']
+                value = self._database_populator.get_replacement(key, modify_before_resaving_fn=fn)
+            else:
+                value = self._database_populator.get_replacement(key)
+
+            return value
+
+        elif 'rand' in kwargs:
+            return random.choice(kwargs['rand'])
         else:
-            return vp.get_replacement(kwargs['var'])
-    if 'db' in kwargs:
-        dp = DatabasePopulator(db)
-        value = dp.get_replacement(kwargs['db'])
+            return "<< not expanded" + str(list(kwargs.keys())[0]) + ">>"
 
-        if 'post-op' in kwargs:
-            db_value = db.get(kwargs['db'])
-            if kwargs['post-op'] == 'increment':
-                db.set(kwargs['db'], db_value+1)
-            elif kwargs['post-op'] == 'decrement':
-                db.set(kwargs['db'], db_value-1)
+    @staticmethod
+    def _parenthetic_processor(
+            text,
+            fn,
+            open_symbol='{',
+            closed_symbol='}',
+    ):
+        open_parenthesis_stack = []
 
-        return value
-    if 'rand' in kwargs:
-        return random.choice(kwargs['rand'])
-    else:
-        return str(list(kwargs.keys())[0])
+        itr = 0
+        while itr < len(text):
+
+            if text[itr:itr+len(open_symbol)] == open_symbol:
+                open_parenthesis_stack.append(itr)
+
+            elif text[itr:itr+len(closed_symbol)] == closed_symbol:
+                if len(open_parenthesis_stack) == 0:
+                    raise ValueError("Not all closing symbols matched")
+
+                start_idx = open_parenthesis_stack.pop()
+                end_idx = itr+1
+                segment = text[start_idx:end_idx]
+                replacement = fn(segment)
+
+                text = "".join((
+                    text[:start_idx],
+                    replacement,
+                    text[end_idx:]
+                ))
+                itr = start_idx
+
+            itr += 1
+        if len(open_parenthesis_stack) == 0:
+            return text
+        else:
+            raise ValueError("Not all open symbols matched")
 
 
 if __name__ == "__main__":
@@ -79,7 +103,6 @@ if __name__ == "__main__":
 
     db_file = 'test_db.pkl'
     db = PickledDatabase(db_file)
-    #db.clear_database()
     db.create_key_if_not_exists('key1', 1)
     db.create_key_if_not_exists('key2', 'two')
     db.create_key_if_not_exists('no_value_key')
@@ -116,5 +139,9 @@ fakebar,fake-bar
     #atexit.register(lambda: os.remove(db_file))
     atexit.register(lambda: os.remove(variation_file))
 
-    out = parenthetic_processor(my_str.strip(), run_populator)
+    variety_populator_ = VarietyPopulator(variation_file)
+    database_populator_ = DatabasePopulator(db_file)
+
+    text_populator = TextPopulator(variety_populator_, database_populator_)
+    out = text_populator.run(my_str)
     print(out)

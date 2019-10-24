@@ -21,7 +21,7 @@ class TestDatabasePopulator(unittest.TestCase):
     def test_get_replacement(self):
 
         self.assertEqual(
-            1,
+            '1',
             self.dp.get_replacement('key1')
         )
         self.assertEqual(
@@ -36,7 +36,7 @@ class TestDatabasePopulator(unittest.TestCase):
             'no_value_key'
         )
         self.assertEqual(
-            3,
+            '3',
             self.dp.get_replacement('no_value_key', default_value=3)
         )
 

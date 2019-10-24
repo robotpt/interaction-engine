@@ -82,6 +82,31 @@ class VarietyPopulator:
 
 if __name__ == '__main__':
 
-    file_ = '../variation.csv'
-    variations_dict_ = VarietyPopulator._create_dict(file_)
+    variation_file = 'variation.csv'
+    variation_file_contents = """
+Code,Text
+greeting,Hi
+greeting,Hello
+greeting,Hola
+question,Do you like green?
+question,Do you like dogs?
+question,Do you like apples?
+question,Do you like me?
+foo,foo
+foo,fake
+foobar,foo-bar
+fakebar,fake-bar
+    """
+
+    with open(variation_file, 'w', newline='') as csvfile:
+        csvfile.write(variation_file_contents.strip())
+
+    import os
+    import atexit
+
+    # atexit.register(lambda: os.remove(db_file))
+    atexit.register(lambda: os.remove(variation_file))
+
+    variety_populator = VarietyPopulator(variation_file)
+    variations_dict_ = VarietyPopulator._create_dict(variation_file)
     print(variations_dict_)
