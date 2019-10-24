@@ -6,7 +6,7 @@ from text_populator.database_populator import DatabasePopulator
 
 
 # TODO: Move kwargs handling inside of each populator class
-# TODO:
+# TODO: Allow populator to have n args put in that are each checked for keywords
 # TODO: Test TextPopulator
 
 
@@ -136,12 +136,13 @@ fakebar,fake-bar
         csvfile.write(variation_file_contents.strip())
 
     import atexit
-    #atexit.register(lambda: os.remove(db_file))
+    atexit.register(lambda: os.remove(db_file))
     atexit.register(lambda: os.remove(variation_file))
 
     variety_populator_ = VarietyPopulator(variation_file)
     database_populator_ = DatabasePopulator(db_file)
 
     text_populator = TextPopulator(variety_populator_, database_populator_)
-    out = text_populator.run(my_str)
-    print(out)
+    for _ in range(4):
+        out = text_populator.run(my_str)
+        print(out)
