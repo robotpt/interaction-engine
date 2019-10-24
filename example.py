@@ -1,6 +1,6 @@
 from robotpt_common_utils import lists
 
-import interfaces
+import data_structures
 
 
 class InteractionEngine:
@@ -26,7 +26,7 @@ class InteractionEngine:
     def _get_message(self, state):
 
         contents, options, msg_type = self._planner(state)
-        generic_message = interfaces.Message(contents, options, msg_type)
+        generic_message = data_structures.Message(contents, options, msg_type)
 
         populated_message = self._populate_message(generic_message)
 
@@ -53,5 +53,5 @@ if __name__ == '__main__':
 
     ie = InteractionEngine(simple_planner, simple_input)
 
-    state_ = interfaces.state_db
+    state_ = data_structures.state_db
     state_ = ie.run(state_)

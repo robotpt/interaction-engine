@@ -1,5 +1,5 @@
 import unittest
-from interfaces.planner import Planner
+from data_structures.planner import Planner
 
 
 class TestPlanner(unittest.TestCase):
