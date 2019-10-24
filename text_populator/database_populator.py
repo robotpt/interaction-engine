@@ -38,4 +38,3 @@ class DatabasePopulator:
             self._db.set(key, new_value)
 
         return convert_fn(value)
-
