@@ -1,4 +1,5 @@
 import ast
+import random
 
 from text_populator.variety_populator import VarietyPopulator
 from text_populator.database_populator import DatabasePopulator
@@ -49,20 +50,19 @@ def parenthetic_processor(
         raise ValueError("Not all open symbols matched")
 
 
-def turn_to_dictionary_and_print_first_key(text):
+def run_populator(text):
     kwargs = ast.literal_eval(text)
     if 'var' in kwargs:
         vp = VarietyPopulator('../variation.csv')
-        """
         if 'index' in kwargs:
             return vp.get_replacement(kwargs['var'], index=kwargs['index'])
         else:
             return vp.get_replacement(kwargs['var'])
-        """
-        return vp.get_replacement(kwargs['var'])
     if 'db' in kwargs:
         dp = DatabasePopulator(db)
         return dp.get_replacement(kwargs['db'])
+    if 'rand' in kwargs:
+        return random.choice(kwargs['rand'])
     else:
         return str(list(kwargs.keys())[0])
 
@@ -74,6 +74,7 @@ if __name__ == "__main__":
 
     db_file = 'test_db.pkl'
     db = PickledDatabase(db_file)
+    db.clear_database()
     db.create_key('key1', 1)
     db.create_key('key2', 'two')
     db.create_key('no_value_key')
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     db.create_key('question_idx', 1)
 
     expr = my_str
-    out = parenthetic_processor(expr, turn_to_dictionary_and_print_first_key)
+    out = parenthetic_processor(expr, run_populator)
     print(out)
 
     os.remove(db_file)

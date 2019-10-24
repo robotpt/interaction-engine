@@ -1,7 +1,7 @@
 import csv
 import random
 
-from robotpt_common_utils import lists
+from robotpt_common_utils import lists, math_tools
 
 
 class VarietyPopulator:
@@ -24,6 +24,10 @@ class VarietyPopulator:
         else:
             if not is_wrap_index and index > self.get_num_variations(key):
                 raise IndexError
+            if math_tools.is_int(index):
+                index = int(index)
+            else:
+                raise ValueError("Index must be an int")
             i = index % self.get_num_variations(key)
             return self._variations[key][i]
 
