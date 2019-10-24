@@ -18,11 +18,7 @@ class InteractionEngine:
         msg = self._get_message(state)
 
         # Make ability to have timeout
-        user_response = self._prompt(msg)
-
-        state.set('user_input', user_response)
-
-        return state
+        return self._prompt(msg)
 
     def _update(self, state, msg):
         pass

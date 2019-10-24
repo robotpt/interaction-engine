@@ -5,14 +5,6 @@ from text_populator.variety_populator import VarietyPopulator
 from text_populator.database_populator import DatabasePopulator
 
 
-my_str = """
-{'var': 'greeting'}, {'db': 'user_name'}. 
-{'rand': ["What's up", 'How are you', "How's it going"]}?
-{'var': 'question', 'index': '{'db': 'question_idx'}'}
-{'var': '{'var': 'foo'}bar'}
-"""
-
-
 def parenthetic_processor(
         text,
         fn,
@@ -53,7 +45,7 @@ def parenthetic_processor(
 def run_populator(text):
     kwargs = ast.literal_eval(text)
     if 'var' in kwargs:
-        vp = VarietyPopulator('../variation.csv')
+        vp = VarietyPopulator(variation_file)
         if 'index' in kwargs:
             return vp.get_replacement(kwargs['var'], index=kwargs['index'])
         else:
@@ -81,8 +73,35 @@ if __name__ == "__main__":
     db.create_key('user_name', 'Audrow')
     db.create_key('question_idx', 1)
 
-    expr = my_str
-    out = parenthetic_processor(expr, run_populator)
-    print(out)
+    my_str = """
+{'var': 'greeting'}, {'db': 'user_name'}. 
+{'rand': ["What's up", 'How are you', "How's it going"]}?
+{'var': 'question', 'index': '{'db': 'question_idx'}'}
+{'var': '{'var': 'foo'}bar'}
+    """
 
-    os.remove(db_file)
+    variation_file = 'variation.csv'
+    variation_file_contents = """
+Code,Text
+greeting,Hi
+greeting,Hello
+greeting,Hola
+question,Do you like green?
+question,Do you like dogs?
+question,Do you like apples?
+question,Do you like me?
+foo,foo
+foo,fake
+foobar,foo-bar
+fakebar,fake-bar
+    """
+
+    with open(variation_file, 'w', newline='') as csvfile:
+        csvfile.write(variation_file_contents.strip())
+
+    import atexit
+    atexit.register(lambda: os.remove(db_file))
+    atexit.register(lambda: os.remove(variation_file))
+
+    out = parenthetic_processor(my_str.strip(), run_populator)
+    print(out)
