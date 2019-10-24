@@ -5,6 +5,9 @@ from text_populator.variety_populator import VarietyPopulator
 from text_populator.database_populator import DatabasePopulator
 
 
+# TODO: Make a TextPopulator class and make it testdriven
+
+
 def parenthetic_processor(
         text,
         fn,
@@ -47,12 +50,22 @@ def run_populator(text):
     if 'var' in kwargs:
         vp = VarietyPopulator(variation_file)
         if 'index' in kwargs:
-            return vp.get_replacement(kwargs['var'], index=kwargs['index'])
+            return vp.get_replacement(
+                kwargs['var'], index=kwargs['index'])
         else:
             return vp.get_replacement(kwargs['var'])
     if 'db' in kwargs:
         dp = DatabasePopulator(db)
-        return dp.get_replacement(kwargs['db'])
+        value = dp.get_replacement(kwargs['db'])
+
+        if 'post-op' in kwargs:
+            db_value = db.get(kwargs['db'])
+            if kwargs['post-op'] == 'increment':
+                db.set(kwargs['db'], db_value+1)
+            elif kwargs['post-op'] == 'decrement':
+                db.set(kwargs['db'], db_value-1)
+
+        return value
     if 'rand' in kwargs:
         return random.choice(kwargs['rand'])
     else:
@@ -66,17 +79,17 @@ if __name__ == "__main__":
 
     db_file = 'test_db.pkl'
     db = PickledDatabase(db_file)
-    db.clear_database()
-    db.create_key('key1', 1)
-    db.create_key('key2', 'two')
-    db.create_key('no_value_key')
-    db.create_key('user_name', 'Audrow')
-    db.create_key('question_idx', 1)
+    #db.clear_database()
+    db.create_key_if_not_exists('key1', 1)
+    db.create_key_if_not_exists('key2', 'two')
+    db.create_key_if_not_exists('no_value_key')
+    db.create_key_if_not_exists('user_name', 'Audrow')
+    db.create_key_if_not_exists('question_idx', 1)
 
     my_str = """
 {'var': 'greeting'}, {'db': 'user_name'}. 
 {'rand': ["What's up", 'How are you', "How's it going"]}?
-{'var': 'question', 'index': '{'db': 'question_idx'}'}
+{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}
 {'var': '{'var': 'foo'}bar'}
     """
 
@@ -100,7 +113,7 @@ fakebar,fake-bar
         csvfile.write(variation_file_contents.strip())
 
     import atexit
-    atexit.register(lambda: os.remove(db_file))
+    #atexit.register(lambda: os.remove(db_file))
     atexit.register(lambda: os.remove(variation_file))
 
     out = parenthetic_processor(my_str.strip(), run_populator)
