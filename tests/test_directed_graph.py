@@ -3,6 +3,11 @@ from planner.directed_graph import DirectedGraph, Node
 from data_structures import Message
 
 
+class TestDirectedGraph(unittest.TestCase):
+
+    pass
+
+
 class TestNode(unittest.TestCase):
 
     def test_multiple_choice_transition(self):

@@ -84,7 +84,7 @@ if __name__ == '__main__':
     ]
     interface = Interface(*fns)
     for msg in [
-        #multiple_choice_message1,
+        multiple_choice_message1,
         #multiple_choice_message2,
         real_number_entry_message,
         string_entry_message,

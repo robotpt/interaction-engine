@@ -28,7 +28,22 @@ class TextPopulator:
             closed_symbol='}',
         )
 
-    def _handle_string_input(self, text):
+    def test(self, text):
+        try:
+            TextPopulator._parenthetic_processor(
+                text,
+                self._test_string_input,
+                open_symbol='{',
+                closed_symbol='}',
+            )
+            return True
+        except (ValueError, KeyError):
+            return False
+
+    def _test_string_input(self, text):
+        return self._handle_string_input(text, is_test=True)
+
+    def _handle_string_input(self, text, is_test=False):
         kwargs = ast.literal_eval(text)
 
         if 'var' in kwargs:
@@ -45,7 +60,7 @@ class TextPopulator:
 
             key = kwargs['db']
 
-            if 'post-op' in kwargs:
+            if 'post-op' in kwargs and is_test:
                 fn = kwargs['post-op']
                 value = self._database_populator.get_replacement(key, modify_before_resaving_fn=fn)
             else:
@@ -56,7 +71,7 @@ class TextPopulator:
         elif 'rand' in kwargs:
             return random.choice(kwargs['rand'])
         else:
-            return "<< not expanded" + str(list(kwargs.keys())[0]) + ">>"
+            raise KeyError(f"No handler found for keys in '{kwargs.keys()}'")
 
     @staticmethod
     def _parenthetic_processor(
