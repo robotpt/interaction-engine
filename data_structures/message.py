@@ -1,4 +1,12 @@
+from robotpt_common_utils import lists
+
+
 class Message:
+
+    class Type:
+        MULTIPLE_CHOICE = "multiple choice"
+        DIRECT_INPUT = "direct input"
+
     def __init__(
             self,
             content,
@@ -10,9 +18,15 @@ class Message:
             error_options=('Okay', 'Oops'),
     ):
         self._content = content
+
+        options = lists.make_sure_is_iterable(options)
         self._options = options
+
         self._message_type = message_type
         self._result_type = result_type
+
+        if tests is not None:
+            tests = lists.make_sure_is_iterable(tests)
         self._tests = tests
         self._error_message = error_message
         self._error_options = error_options
@@ -42,5 +56,6 @@ class Message:
         return Message(
             content=self._error_message,
             options=self._error_options,
-            message_type='multiple choice'
+            message_type=Message.Type.MULTIPLE_CHOICE
         )
+
