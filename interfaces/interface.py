@@ -14,10 +14,10 @@ class Interface:
             error_input_fn=None,
     ):
         self._output_input_fns = {
-            'multiple choice': (
+            Message.Type.MULTIPLE_CHOICE: (
                 multiple_choice_output_fn, multiple_choice_input_fn
             ),
-            'direct input': (
+            Message.Type.DIRECT_INPUT: (
                 direct_input_output_fn, direct_input_input_fn
             )
         }

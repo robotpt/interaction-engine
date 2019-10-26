@@ -3,6 +3,18 @@ from data_structures import Message
 from robotpt_common_utils import math_tools, lists
 
 
+class TerminalInterface(Interface):
+
+    def __init__(self):
+        fns = [
+            print_multiple_choice,
+            input_multiple_choice,
+            print_content,
+            direct_input,
+        ]
+        super().__init__(*fns)
+
+
 def print_content(message):
     if type(message) is not Message:
         raise ValueError("Must input message class")
@@ -76,13 +88,7 @@ if __name__ == '__main__':
         error_message='Enter something with at least two letters',
     )
 
-    fns = [
-        print_multiple_choice,
-        input_multiple_choice,
-        print_content,
-        direct_input,
-    ]
-    interface = Interface(*fns)
+    interface = TerminalInterface()
     for msg in [
         multiple_choice_message1,
         #multiple_choice_message2,
