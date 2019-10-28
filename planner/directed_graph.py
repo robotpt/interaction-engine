@@ -3,6 +3,9 @@ from robotpt_common_utils import lists
 from planner.node import Node
 
 
+# TODO: check that can reach exit from all nodes, eventually
+
+
 class DirectedGraph:
 
     def __init__(
@@ -42,7 +45,7 @@ class DirectedGraph:
         self._nodes_dict[node.name] = node
 
     def get_message(self):
-        return self.current_node.message
+       return self.current_node.message
 
     def get_nodes(self):
         return list(self._nodes_dict)
