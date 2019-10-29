@@ -1,5 +1,5 @@
 from data_structures import Message
-from robotpt_common_utils import lists
+from robotpt_common_utils import lists, user_input
 
 
 class Interface:
@@ -49,11 +49,29 @@ class Interface:
         except (ValueError, TypeError):
             is_valid = False
 
-        if is_valid:
-            return result
-        else:
+        if not is_valid:
             self.run(message.error_message)
             return self.run(message)
+
+        if message.is_confirm:
+            confirm_message = Interface._get_confirm_message(result)
+            is_confirmed_str = self.run(confirm_message)
+            is_confirmed = user_input.is_yes(is_confirmed_str)
+            if not is_confirmed:
+                return self.run(message)
+
+        return result
+
+    @staticmethod
+    def _get_confirm_message(value):
+        return Message(
+            content=f"'{str(value)}', right?",
+            options=['Yes', 'No'],
+            message_type=Message.Type.MULTIPLE_CHOICE,
+            result_type=str,
+            is_confirm=False
+        )
+
 
     @staticmethod
     def _do_tests_pass(message, result):

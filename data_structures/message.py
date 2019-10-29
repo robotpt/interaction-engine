@@ -15,6 +15,7 @@ class Message:
             message_type,
             result_type=str,
             tests=None,
+            is_confirm=False,
             error_message="Please enter a valid input",
             error_options=('Okay', 'Oops'),
             text_populator=None,
@@ -38,6 +39,9 @@ class Message:
         if tests is not None:
             tests = lists.make_sure_is_iterable(tests)
         self._tests = tests
+
+        self._is_confirm = is_confirm
+
         self._error_message = error_message
         self._error_options = error_options
 
@@ -89,6 +93,10 @@ class Message:
             message_type=Message.Type.MULTIPLE_CHOICE,
             text_populator=self._text_populator
         )
+
+    @property
+    def is_confirm(self):
+        return self._is_confirm
 
 
 if __name__ == "__main__":

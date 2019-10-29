@@ -67,6 +67,7 @@ if __name__ == '__main__':
         content='Do you love me?',
         options='Yes!',
         message_type='multiple choice',
+        is_confirm=True,
     )
     real_number_entry_message = Message(
         content='How old are you?',
@@ -86,6 +87,7 @@ if __name__ == '__main__':
         result_type=str,
         tests=lambda x: len(x) > 1,
         error_message='Enter something with at least two letters',
+        is_confirm=True,
     )
 
     interface = TerminalInterface()
