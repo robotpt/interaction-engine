@@ -101,7 +101,13 @@ if __name__ == '__main__':
         is_confirm=True,
     )
 
-    db = PickledDatabase()
+    import os
+    import atexit
+
+    db_file = "memory.pkl"
+    atexit.register(lambda: os.remove(db_file))
+
+    db = PickledDatabase(db_file)
     interface = TerminalInterface(pickled_database=db)
     for msg in [
         multiple_choice_message1,
@@ -112,4 +118,6 @@ if __name__ == '__main__':
         out = interface.run(msg)
         print(out)
 
+    print("=========================")
+    print("Currently in the database")
     print(db)

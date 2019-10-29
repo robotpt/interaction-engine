@@ -72,8 +72,6 @@ class DirectedGraph:
 
 if __name__ == '__main__':
 
-    from interfaces.terminal_interface import TerminalInterface
-
     multiple_choice_message1 = Message(
         content='How are you?',
         options=['Good', 'Okay', 'Bad'],
@@ -83,52 +81,76 @@ if __name__ == '__main__':
         content='Do you love me?',
         options='Yes!',
         message_type='multiple choice',
+        is_confirm=True,
     )
     real_number_entry_message = Message(
         content='How old are you?',
         options='years_old',
         message_type='direct input',
         result_type=float,
+        result_db_key='user_age',
         tests=[
             lambda x: x >= 0,
-            lambda x: x <= 120,
+            lambda x: x <= 200,
         ],
-        error_message='Enter a number between 0 and 120',
+        error_message='Enter a number between 0 and 200',
     )
     string_entry_message = Message(
         content="What's your name?",
         options='Okay',
         message_type='direct input',
+        result_db_key='user_name',
         result_type=str,
         tests=lambda x: len(x) > 1,
         error_message='Enter something with at least two letters',
+        is_confirm=True,
     )
 
-    node1 = Node(
-        name='node1',
-        message=multiple_choice_message1,
-        transitions=['node2', 'node2', 'node3'],
-    )
-    node2 = Node(
-        name='node2',
-        message=multiple_choice_message2,
-        transitions='node3'
-    )
-    node3 = Node(
-        name='node3',
+    ask_name = Node(
+        name='ask name',
         message=string_entry_message,
+        transitions='ask age'
+    )
+    ask_age = Node(
+        name='ask age',
+        message=real_number_entry_message,
+        transitions='how are they'
+    )
+    how_are_they = Node(
+        name='how are they',
+        message=multiple_choice_message1,
+        transitions=['do love me', 'exit', 'exit'],
+    )
+    do_love_me = Node(
+        name='do love me',
+        message=multiple_choice_message2,
         transitions='exit'
     )
 
-    nodes = [node1, node2, node3]
+    nodes = [ask_age, ask_name, how_are_they, do_love_me]
     directed_graph = DirectedGraph(
         nodes=nodes,
-        start_node='node1'
+        start_node='ask name'
     )
-    interface = TerminalInterface()
+
+    from interfaces.terminal_interface import TerminalInterface
+    from pickled_database import PickledDatabase
+
+    import os
+    import atexit
+
+    atexit.register(lambda: os.remove(db_file))
+
+    db_file = "memory.pkl"
+    db = PickledDatabase(db_file)
+
+    interface = TerminalInterface(pickled_database=db)
     while directed_graph.is_active:
         msg = directed_graph.get_message()
         user_response = interface.run(msg)
         directed_graph.transition(user_response)
 
+    print("=========================")
+    print("Currently in the database")
+    print(db)
 
