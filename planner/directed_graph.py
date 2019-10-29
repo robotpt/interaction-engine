@@ -72,59 +72,105 @@ class DirectedGraph:
 
 if __name__ == '__main__':
 
-    multiple_choice_message1 = Message(
-        content='How are you?',
-        options=['Good', 'Okay', 'Bad'],
-        message_type='multiple choice',
-    )
-    multiple_choice_message2 = Message(
-        content='Do you love me?',
-        options='Yes!',
-        message_type='multiple choice',
-        is_confirm=True,
-    )
-    real_number_entry_message = Message(
-        content='How old are you?',
-        options='years_old',
-        message_type='direct input',
-        result_type=float,
-        result_db_key='user_age',
-        tests=[
-            lambda x: x >= 0,
-            lambda x: x <= 200,
-        ],
-        error_message='Enter a number between 0 and 200',
-    )
-    string_entry_message = Message(
-        content="What's your name?",
-        options='Okay',
-        message_type='direct input',
-        result_db_key='user_name',
-        result_type=str,
-        tests=lambda x: len(x) > 1,
-        error_message='Enter something with at least two letters',
-        is_confirm=True,
-    )
+    import os
+    from pickled_database import PickledDatabase
+    from text_populator import TextPopulator
+    from text_populator.database_populator import DatabasePopulator
+    from text_populator.variety_populator import VarietyPopulator
+
+    db_file = 'test_db.pkl'
+    db = PickledDatabase(db_file)
+    db.create_key_if_not_exists('key1', 1)
+    db.create_key_if_not_exists('key2', 'two')
+    db.create_key_if_not_exists('no_value_key')
+    db.create_key_if_not_exists('user_name', 'Audrow')
+    db.create_key_if_not_exists('question_idx', 1)
+
+    my_str = """
+{'var': 'greeting'}, {'db': 'user_name'}. 
+{'rand': ["What's up", 'How are you', "How's it going"]}?
+{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}
+{'var': '{'var': 'foo'}bar'}
+        """
+
+    variation_file = 'variation.csv'
+    variation_file_contents = """
+Code,Text
+greeting,Hi
+greeting,Hello
+greeting,Hola
+question,Do you like green?
+question,Do you like dogs?
+question,Do you like apples?
+question,Do you like me?
+foo,foo
+foo,fake
+foobar,foo-bar
+fakebar,fake-bar
+        """
+
+    with open(variation_file, 'w', newline='') as csvfile:
+        csvfile.write(variation_file_contents.strip())
+
+    import atexit
+    #atexit.register(lambda: os.remove(db_file))
+    #atexit.register(lambda: os.remove(variation_file))
+
+    variety_populator_ = VarietyPopulator(variation_file)
+    database_populator_ = DatabasePopulator(db_file)
+    text_populator = TextPopulator(variety_populator_, database_populator_)
 
     ask_name = Node(
         name='ask name',
-        message=string_entry_message,
+        message=Message(
+            content="What's your name?",
+            options='Okay',
+            message_type='direct input',
+            result_db_key='user_name',
+            result_type=str,
+            tests=lambda x: len(x) > 1,
+            error_message='Enter something with at least two letters',
+            is_confirm=True,
+            text_populator=text_populator,
+        ),
         transitions='ask age'
     )
     ask_age = Node(
         name='ask age',
-        message=real_number_entry_message,
+        message=Message(
+            content="Alright, {'db': 'user_name'}, how old are you?",
+            options='years_old',
+            message_type='direct input',
+            result_type=float,
+            result_db_key='user_age',
+            tests=[
+                lambda x: x >= 0,
+                lambda x: x <= 200,
+            ],
+            error_message='Enter a number between 0 and 200',
+            text_populator=text_populator,
+        ),
         transitions='how are they'
     )
     how_are_they = Node(
         name='how are they',
-        message=multiple_choice_message1,
-        transitions=['do love me', 'exit', 'exit'],
+        message=Message(
+            content='How are you?',
+            options=['Good', 'Okay', 'Bad'],
+            message_type='multiple choice',
+            text_populator=text_populator,
+        ),
+        transitions=['psych question', 'psych question', 'exit'],
     )
     do_love_me = Node(
-        name='do love me',
-        message=multiple_choice_message2,
-        transitions='exit'
+        name='psych question',
+        message=Message(
+            content="{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}",
+            options="Yes!",
+            message_type='multiple choice',
+            text_populator=text_populator,
+        ),
+        transitions='exit',
     )
 
     nodes = [ask_age, ask_name, how_are_they, do_love_me]
@@ -135,14 +181,6 @@ if __name__ == '__main__':
 
     from interfaces.terminal_interface import TerminalInterface
     from pickled_database import PickledDatabase
-
-    import os
-    import atexit
-
-    atexit.register(lambda: os.remove(db_file))
-
-    db_file = "memory.pkl"
-    db = PickledDatabase(db_file)
 
     interface = TerminalInterface(pickled_database=db)
     while directed_graph.is_active:

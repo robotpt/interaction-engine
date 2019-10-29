@@ -16,16 +16,26 @@ class TextPopulator:
             self,
             variety_populator,
             database_populator,
+            open_symbol='{',
+            closed_symbol='}',
     ):
+        if type(variety_populator) is not VarietyPopulator:
+            raise TypeError
         self._variety_populator = variety_populator
+
+        if type(database_populator) is not DatabasePopulator:
+            raise TypeError
         self._database_populator = database_populator
+
+        self._open_symbol = open_symbol
+        self._closed_symbol = closed_symbol
 
     def run(self, text):
         return TextPopulator._parenthetic_processor(
             text,
             self._handle_string_input,
-            open_symbol='{',
-            closed_symbol='}',
+            open_symbol=self._open_symbol,
+            closed_symbol=self._closed_symbol,
         )
 
     def test(self, text):
@@ -33,8 +43,8 @@ class TextPopulator:
             TextPopulator._parenthetic_processor(
                 text,
                 self._test_string_input,
-                open_symbol='{',
-                closed_symbol='}',
+                open_symbol=self._open_symbol,
+                closed_symbol=self._closed_symbol,
             )
             return True
         except (ValueError, KeyError):
