@@ -1,5 +1,6 @@
 from data_structures import Message
 from robotpt_common_utils import lists, user_input
+from pickled_database import PickledDatabase
 
 
 class Interface:
@@ -12,6 +13,8 @@ class Interface:
             direct_input_input_fn,
             error_output_fn=None,
             error_input_fn=None,
+            pickled_database=None,
+            is_create_db_key_if_not_exist=True,
     ):
         self._output_input_fns = {
             Message.Type.MULTIPLE_CHOICE: (
@@ -30,6 +33,14 @@ class Interface:
             error_input_fn = multiple_choice_input_fn
         self._error_input_fn = error_input_fn
 
+        if (
+                pickled_database is not None
+                and type(pickled_database) is not PickledDatabase
+        ):
+            raise TypeError
+        self._db = pickled_database
+        self._is_create_db_key_if_not_exist = is_create_db_key_if_not_exist
+
     def run(self, message):
 
         if type(message) is not Message:
@@ -43,22 +54,35 @@ class Interface:
         output_fn(message)
         result_str = input_fn(message)
 
+        # Rerun if user put in bad entry
         try:
             result = message.result_type(result_str)
             is_valid = Interface._do_tests_pass(message, result)
         except (ValueError, TypeError):
             is_valid = False
-
         if not is_valid:
             self.run(message.error_message)
             return self.run(message)
 
+        # Ask if what user input is correct, if not rerun
         if message.is_confirm:
             confirm_message = Interface._get_confirm_message(result)
             is_confirmed_str = self.run(confirm_message)
             is_confirmed = user_input.is_yes(is_confirmed_str)
             if not is_confirmed:
                 return self.run(message)
+
+        # Write user input into the database
+        if (
+                message.result_db_key is not None
+                and self._db is not None
+        ):
+            if (
+                    message.result_db_key not in self._db
+                    and self._is_create_db_key_if_not_exist
+            ):
+                self._db.create_key(message.result_db_key)
+            self._db.set(message.result_db_key, result)
 
         return result
 
@@ -71,7 +95,6 @@ class Interface:
             result_type=str,
             is_confirm=False
         )
-
 
     @staticmethod
     def _do_tests_pass(message, result):

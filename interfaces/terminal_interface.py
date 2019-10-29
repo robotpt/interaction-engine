@@ -1,18 +1,27 @@
 from interfaces.interface import Interface
 from data_structures import Message
 from robotpt_common_utils import math_tools, lists
+from pickled_database import PickledDatabase
 
 
 class TerminalInterface(Interface):
 
-    def __init__(self):
+    def __init__(
+            self,
+            pickled_database=None,
+            is_create_db_key_if_not_exist=True,
+    ):
         fns = [
             print_multiple_choice,
             input_multiple_choice,
             print_content,
             direct_input,
         ]
-        super().__init__(*fns)
+        super().__init__(
+            *fns,
+            pickled_database=pickled_database,
+            is_create_db_key_if_not_exist=is_create_db_key_if_not_exist
+        )
 
 
 def print_content(message):
@@ -74,6 +83,7 @@ if __name__ == '__main__':
         options='years_old',
         message_type='direct input',
         result_type=float,
+        result_db_key='user_age',
         tests=[
             lambda x: x >= 0,
             lambda x: x <= 120,
@@ -85,17 +95,21 @@ if __name__ == '__main__':
         options='Okay',
         message_type='direct input',
         result_type=str,
+        result_db_key='user_name',
         tests=lambda x: len(x) > 1,
         error_message='Enter something with at least two letters',
         is_confirm=True,
     )
 
-    interface = TerminalInterface()
+    db = PickledDatabase()
+    interface = TerminalInterface(pickled_database=db)
     for msg in [
         multiple_choice_message1,
-        #multiple_choice_message2,
+        multiple_choice_message2,
         real_number_entry_message,
         string_entry_message,
     ]:
         out = interface.run(msg)
         print(out)
+
+    print(db)

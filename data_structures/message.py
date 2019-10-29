@@ -14,6 +14,7 @@ class Message:
             options,
             message_type,
             result_type=str,
+            result_db_key=None,
             tests=None,
             is_confirm=False,
             error_message="Please enter a valid input",
@@ -34,7 +35,9 @@ class Message:
         self._options = options
 
         self._message_type = message_type
+
         self._result_type = result_type
+        self._result_db_key = result_db_key
 
         if tests is not None:
             tests = lists.make_sure_is_iterable(tests)
@@ -80,6 +83,10 @@ class Message:
     @property
     def result_type(self):
         return self._result_type
+
+    @property
+    def result_db_key(self):
+        return self._result_db_key
 
     @property
     def tests(self):
