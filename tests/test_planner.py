@@ -17,14 +17,14 @@ class TestPlanner(unittest.TestCase):
     def test_insert_into_plan(self):
         possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
         s = Planner(possible_plans)
-        for p in possible_plans[::-1]:
-            s.insert_into_plan(p)
+        for p in possible_plans:
+            s.insert(p)
         for p in possible_plans:
             self.assertEqual(
                 p,
                 s.pop_plan()
             )
-        s.insert_into_plan(possible_plans)
+        s.insert(possible_plans)
         for p in possible_plans:
             self.assertEqual(
                 p,
@@ -38,7 +38,7 @@ class TestPlanner(unittest.TestCase):
         for p in invalid_plans:
             self.assertRaises(
                 ValueError,
-                s.insert_into_plan,
+                s.insert,
                 p
             )
             self.assertRaises(

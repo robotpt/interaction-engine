@@ -90,7 +90,7 @@ class TextPopulator:
             else:
                 default_value = None
 
-            if DatabasePopulator.Tags.POST_OP in kwargs and is_test:
+            if DatabasePopulator.Tags.POST_OP in kwargs and not is_test:
                 fn = kwargs[DatabasePopulator.Tags.POST_OP]
                 value = self._database_populator.get_replacement(
                     key,

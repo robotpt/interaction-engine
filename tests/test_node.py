@@ -1,5 +1,5 @@
 import unittest
-from planner.node import Node
+from messager.node import Node
 from data_structures import Message
 
 

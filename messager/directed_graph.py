@@ -1,20 +1,23 @@
 from data_structures import Message
 from robotpt_common_utils import lists
-from planner.node import Node
+from messager.node import Node
+from messager.base_messenger import BaseMessenger
 
 
 # TODO: check that can reach exit from all nodes, eventually
 
 
-class DirectedGraph:
+class DirectedGraph(BaseMessenger):
 
     def __init__(
             self,
+            name,
             nodes,
             start_node,
             exit_code='exit'
     ):
 
+        super().__init__(name)
         self._nodes_dict = {}
         nodes = lists.make_sure_is_iterable(nodes)
         for node in nodes:
@@ -169,6 +172,7 @@ fakebar,fake-bar
 
     nodes_ = [ask_age, ask_name, how_are_they, do_love_me]
     directed_graph = DirectedGraph(
+        name='graph1',
         nodes=nodes_,
         start_node='ask name'
     )

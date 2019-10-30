@@ -1,21 +1,25 @@
 import unittest
-from planner.directed_graph import DirectedGraph, Node
+from messager.directed_graph import DirectedGraph, Node
 from data_structures import Message
 
 content = 'Question'
 options = ['left', 'right']
 
-def left_option():
-    return options[0]
-
-def right_option():
-    return options[1]
 
 message = Message(
     content=content,
     options=options,
     message_type=Message.Type.MULTIPLE_CHOICE,
 )
+
+
+def left_option():
+    return options[0]
+
+
+def right_option():
+    return options[1]
+
 
 node1 = Node(
     name='node1',
@@ -34,18 +38,12 @@ node3 = Node(
 )
 
 
-"""
-while directed_graph.is_active:
-    msg = directed_graph.get_message()
-    directed_graph.transition(user_response)
-"""
-
-
 class TestDirectedGraph(unittest.TestCase):
 
     def test_step_through_nodes(self) -> None:
         nodes_ = [node1, node2, node3]
         directed_graph = DirectedGraph(
+            name='graph1',
             nodes=nodes_,
             start_node='node1'
         )
