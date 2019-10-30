@@ -1,12 +1,27 @@
 from pickled_database import PickledDatabase
+from text_populator.base_populator import BasePopulator
 
 
-class DatabasePopulator:
+class DatabasePopulator(BasePopulator):
+
+    class Tags:
+        MAIN = 'db'
+        POST_OP = 'post-op'
+        DEFAULT_VALUE = 'default value'
 
     def __init__(
             self,
             database,
     ):
+
+        super().__init__(
+            main_tags=[self.Tags.MAIN],
+            option_tags=[
+                self.Tags.POST_OP,
+                self.Tags.DEFAULT_VALUE
+            ]
+        )
+
         if type(database) is str:
             self._db = PickledDatabase(database)
         else:

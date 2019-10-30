@@ -32,13 +32,13 @@ class TestBasePopulator(unittest.TestCase):
 
         for m in main_tags:
             self.assertTrue(
-                self.foo_populator.is_valid(
+                self.foo_populator.is_tags_valid(
                     make_dict_with_foo_elements(m)
                 )
             )
         for k in ['not a key', None, int, input]:
             self.assertFalse(
-                self.foo_populator.is_valid(
+                self.foo_populator.is_tags_valid(
                     make_dict_with_foo_elements(k)
                 )
             )
@@ -46,7 +46,7 @@ class TestBasePopulator(unittest.TestCase):
     def test_multiple_main_keys(self):
         for i in range(2, len(main_tags)):
             self.assertFalse(
-                self.foo_populator.is_valid(
+                self.foo_populator.is_tags_valid(
                     make_dict_with_foo_elements(
                         main_tags[:i]
                     )
@@ -57,13 +57,13 @@ class TestBasePopulator(unittest.TestCase):
         for m in main_tags:
             for o in option_tags:
                 self.assertTrue(
-                    self.foo_populator.is_valid(
+                    self.foo_populator.is_tags_valid(
                         make_dict_with_foo_elements([m, o])
                     )
                 )
             for o in ['not a key', None, int, input]:
                 self.assertFalse(
-                    self.foo_populator.is_valid(
+                    self.foo_populator.is_tags_valid(
                         make_dict_with_foo_elements([m, o])
                     )
                 )
@@ -73,7 +73,7 @@ class TestBasePopulator(unittest.TestCase):
         for m in main_tags:
             for i in range(2, len(option_tags)):
                 self.assertFalse(
-                    self.foo_populator.is_valid(
+                    self.foo_populator.is_tags_valid(
                         make_dict_with_foo_elements(
                             option_tags[:i].append(m)
                         )

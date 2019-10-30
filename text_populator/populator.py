@@ -56,25 +56,52 @@ class TextPopulator:
     def _handle_string_input(self, text, is_test=False):
         kwargs = ast.literal_eval(text)
 
-        if 'var' in kwargs:
+        if VarietyPopulator.Tags.MAIN in kwargs:
 
-            handle = kwargs['var']
+            if not self._variety_populator.is_tags_valid(kwargs):
+                raise KeyError("Invalid key in database")
 
-            if 'index' in kwargs:
+            handle = kwargs[VarietyPopulator.Tags.MAIN]
+
+            if VarietyPopulator.Tags.INDEX in kwargs:
+
+                if VarietyPopulator.Tags.IS_WRAP_INDEX in kwargs:
+                    is_wrap_index = kwargs[VarietyPopulator.Tags.IS_WRAP_INDEX]
+                else:
+                    is_wrap_index = True
+
                 return self._variety_populator.get_replacement(
-                    handle, index=kwargs['index'])
+                    handle,
+                    index=kwargs[VarietyPopulator.Tags.INDEX],
+                    is_wrap_index=is_wrap_index,
+                )
             else:
                 return self._variety_populator.get_replacement(handle)
 
-        elif 'db' in kwargs:
+        elif DatabasePopulator.Tags.MAIN in kwargs:
 
-            key = kwargs['db']
+            if not self._database_populator.is_tags_valid(kwargs):
+                raise KeyError("Invalid key in database")
 
-            if 'post-op' in kwargs and is_test:
-                fn = kwargs['post-op']
-                value = self._database_populator.get_replacement(key, modify_before_resaving_fn=fn)
+            key = kwargs[DatabasePopulator.Tags.MAIN]
+
+            if DatabasePopulator.Tags.DEFAULT_VALUE in kwargs:
+                default_value = kwargs[DatabasePopulator.Tags.DEFAULT_VALUE]
             else:
-                value = self._database_populator.get_replacement(key)
+                default_value = None
+
+            if DatabasePopulator.Tags.POST_OP in kwargs and is_test:
+                fn = kwargs[DatabasePopulator.Tags.POST_OP]
+                value = self._database_populator.get_replacement(
+                    key,
+                    modify_before_resaving_fn=fn,
+                    default_value=default_value,
+                )
+            else:
+                value = self._database_populator.get_replacement(
+                    key,
+                    default_value = default_value,
+                )
 
             return value
 

@@ -20,10 +20,11 @@ class BasePopulator(ABC):
         self._option_tags = option_tags
 
     @abstractmethod
-    def get_replacement(self, key) -> str:
+    def get_replacement(self, tags_dict) -> str:
         pass
 
-    def is_valid(self, tags_dict) -> bool:
+    def is_tags_valid(self, tags_dict) -> bool:
+        # TODO: make tags more sophisticated so that they can be tested individually
 
         if type(tags_dict) is not dict:
             raise TypeError

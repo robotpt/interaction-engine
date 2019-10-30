@@ -2,9 +2,15 @@ import csv
 import random
 
 from robotpt_common_utils import lists, math_tools
+from text_populator.base_populator import BasePopulator
 
 
-class VarietyPopulator:
+class VarietyPopulator(BasePopulator):
+
+    class Tags:
+        MAIN = 'var'
+        INDEX = 'index'
+        IS_WRAP_INDEX = 'is_wrap_index'
 
     def __init__(
             self,
@@ -12,13 +18,25 @@ class VarietyPopulator:
             code_key_in_file='Code',
             text_key_in_file='Text',
     ):
+        super().__init__(
+            main_tags=self.Tags.MAIN,
+            option_tags=[
+                self.Tags.INDEX,
+                self.Tags.IS_WRAP_INDEX
+            ]
+        )
         self._variations = VarietyPopulator._create_dict(
             files,
             code_key_in_file=code_key_in_file,
             text_key_in_file=text_key_in_file,
         )
 
-    def get_replacement(self, key, index=None, is_wrap_index=True):
+    def get_replacement(
+            self,
+            key,
+            index=None,
+            is_wrap_index=True
+    ):
         if index is None:
             return random.choice(self._variations[key])
         else:
