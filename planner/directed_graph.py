@@ -45,20 +45,13 @@ class DirectedGraph:
         self._nodes_dict[node.name] = node
 
     def get_message(self):
-        return self.current_node.message
+        return self._nodes_dict[self.current_node].message
 
     def get_nodes(self):
         return list(self._nodes_dict)
 
     @property
     def current_node(self):
-        if self.is_active:
-            return self._nodes_dict[self.current_node_name]
-        else:
-            return None
-
-    @property
-    def current_node_name(self):
         if self._is_active:
             return self._current_node_name
         else:
@@ -71,7 +64,7 @@ class DirectedGraph:
     def transition(self, user_input):
         if not self.is_active:
             raise RuntimeError("Currently inactive")
-        new_node = self.current_node.get_transition(user_input)
+        new_node = self._nodes_dict[self.current_node].get_transition(user_input)
         if new_node is self._exit_code:
             self._is_active = False
         else:

@@ -61,7 +61,7 @@ class TestDirectedGraph(unittest.TestCase):
                 directed_graph.transition(right_option())
                 self.assertEqual(
                     node1.name,
-                    directed_graph.current_node_name,
+                    directed_graph.current_node,
                 )
 
             self.assertTrue(directed_graph.is_active)
@@ -72,7 +72,7 @@ class TestDirectedGraph(unittest.TestCase):
                 directed_graph.transition(left_option())
                 self.assertEqual(
                     node2.name,
-                    directed_graph.current_node_name,
+                    directed_graph.current_node,
                 )
                 self.assertTrue(directed_graph.is_active)
 
@@ -89,9 +89,6 @@ class TestDirectedGraph(unittest.TestCase):
                 )
                 self.assertIsNone(
                     directed_graph.current_node
-                )
-                self.assertIsNone(
-                    directed_graph.current_node_name
                 )
 
             directed_graph.reset()
