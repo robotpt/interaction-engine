@@ -45,24 +45,32 @@ class DirectedGraph:
         self._nodes_dict[node.name] = node
 
     def get_message(self):
-       return self.current_node.message
+        return self.current_node.message
 
     def get_nodes(self):
         return list(self._nodes_dict)
 
     @property
     def current_node(self):
-        return self._nodes_dict[self.current_node_name]
+        if self.is_active:
+            return self._nodes_dict[self.current_node_name]
+        else:
+            return None
 
     @property
     def current_node_name(self):
-        return self._current_node_name
+        if self._is_active:
+            return self._current_node_name
+        else:
+            return None
 
     @property
     def is_active(self):
         return self._is_active
 
     def transition(self, user_input):
+        if not self.is_active:
+            raise RuntimeError("Currently inactive")
         new_node = self.current_node.get_transition(user_input)
         if new_node is self._exit_code:
             self._is_active = False
@@ -86,13 +94,6 @@ if __name__ == '__main__':
     db.create_key_if_not_exists('user_name', 'Audrow')
     db.create_key_if_not_exists('question_idx', 1)
 
-    my_str = """
-{'var': 'greeting'}, {'db': 'user_name'}. 
-{'rand': ["What's up", 'How are you', "How's it going"]}?
-{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}
-{'var': '{'var': 'foo'}bar'}
-        """
-
     variation_file = 'variation.csv'
     variation_file_contents = """
 Code,Text
@@ -113,8 +114,8 @@ fakebar,fake-bar
         csvfile.write(variation_file_contents.strip())
 
     import atexit
-    #atexit.register(lambda: os.remove(db_file))
-    #atexit.register(lambda: os.remove(variation_file))
+    atexit.register(lambda: os.remove(db_file))
+    atexit.register(lambda: os.remove(variation_file))
 
     variety_populator_ = VarietyPopulator(variation_file)
     database_populator_ = DatabasePopulator(db_file)
@@ -173,9 +174,9 @@ fakebar,fake-bar
         transitions='exit',
     )
 
-    nodes = [ask_age, ask_name, how_are_they, do_love_me]
+    nodes_ = [ask_age, ask_name, how_are_they, do_love_me]
     directed_graph = DirectedGraph(
-        nodes=nodes,
+        nodes=nodes_,
         start_node='ask name'
     )
 
@@ -191,4 +192,3 @@ fakebar,fake-bar
     print("=========================")
     print("Currently in the database")
     print(db)
-
