@@ -15,6 +15,7 @@ class Message:
             message_type,
             result_type=str,
             result_db_key=None,
+            is_append_result=False,
             tests=None,
             is_confirm=False,
             error_message="Please enter a valid input",
@@ -25,19 +26,24 @@ class Message:
             raise ValueError
         self._text_populator = text_populator
 
-        if not self._test_markup(content):
-            raise ValueError(f"Invalid content: '{content}'")
+        try:
+            self._test_markup(content)
+        except Exception as e:
+            raise e
         self._content = content
 
         options = lists.make_sure_is_iterable(options)
-        if not self._test_markup(options):
-            raise ValueError(f"Invalid options: '{options}'")
+        try:
+            self._test_markup(options)
+        except Exception as e:
+            raise e
         self._options = options
 
         self._message_type = message_type
 
         self._result_type = result_type
         self._result_db_key = result_db_key
+        self._is_append_result = is_append_result
 
         if tests is not None:
             tests = lists.make_sure_is_iterable(tests)
@@ -54,9 +60,9 @@ class Message:
             return True
 
         if lists.is_iterable(text):
-            return all([self._text_populator.test(t) for t in text])
+            return all([self._text_populator.is_valid(t) for t in text])
         else:
-            return self._text_populator.test(text)
+            return self._text_populator.is_valid(text)
 
     def _markup(self, text):
 
@@ -87,6 +93,10 @@ class Message:
     @property
     def result_db_key(self):
         return self._result_db_key
+
+    @property
+    def is_append_result(self):
+        return self._is_append_result
 
     @property
     def tests(self):

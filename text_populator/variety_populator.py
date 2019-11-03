@@ -52,6 +52,9 @@ class VarietyPopulator(BasePopulator):
     def get_num_variations(self, key):
         return len(self._variations[key])
 
+    def __contains__(self, key):
+        return key in self._variations
+
     @staticmethod
     def _create_dict(
             files,

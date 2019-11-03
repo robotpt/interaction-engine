@@ -16,8 +16,9 @@ import atexit
 
 db_file = 'test_db.pkl'
 db = PickledDatabase(db_file)
-db.create_key_if_not_exists('user_name', 'friend')
-db.create_key_if_not_exists('question_idx', 1)
+db.create_key_if_not_exists('user_name')
+db.create_key_if_not_exists('question_idx', 0)
+db.create_key_if_not_exists('answers')
 
 variation_file = 'variation.csv'
 variation_file_contents = """
@@ -38,7 +39,7 @@ fakebar,fake-bar
 with open(variation_file, 'w', newline='') as csvfile:
     csvfile.write(variation_file_contents.strip())
 
-# atexit.register(lambda: os.remove(db_file))
+atexit.register(lambda: os.remove(db_file))
 atexit.register(lambda: os.remove(variation_file))
 
 variety_populator_ = VarietyPopulator(variation_file)
@@ -121,6 +122,8 @@ psych_question = DirectedGraph(
                 'Strongly disagree',
             ],
             message_type='multiple choice',
+            result_db_key='answers',
+            is_append_result=True,
             text_populator=text_populator,
             transitions='exit',
         ),
@@ -142,6 +145,7 @@ closing = DirectedGraph(
     ],
     start_node='closing'
 )
+
 
 graphs = {
     greeting.name: greeting,

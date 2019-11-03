@@ -3,6 +3,7 @@ import random
 
 from text_populator.variety_populator import VarietyPopulator
 from text_populator.database_populator import DatabasePopulator
+from robotpt_common_utils import lists
 
 
 # TODO: Move kwargs handling inside of each populator class
@@ -38,24 +39,48 @@ class TextPopulator:
             closed_symbol=self._closed_symbol,
         )
 
-    def test(self, text):
+    def is_valid(self, text):
         try:
             TextPopulator._parenthetic_processor(
                 text,
-                self._test_string_input,
+                self._test_kwargs,
                 open_symbol=self._open_symbol,
                 closed_symbol=self._closed_symbol,
             )
-            return True
-        except (ValueError, KeyError):
-            return False
+        except Exception as e:
+            raise e
+        return True
 
-    def _test_string_input(self, text):
-        # TODO: Test should be able to handle unset db entries by checking if they exist, but are unset
-        return self._handle_string_input(text, is_test=True)
+    def _test_kwargs(self, **kwargs):
+        # TODO: Test should be able to key unset db entries by checking if they exist, but are unset
 
-    def _handle_string_input(self, text, is_test=False):
-        kwargs = ast.literal_eval(text)
+        if VarietyPopulator.Tags.MAIN in kwargs:
+
+            if not self._variety_populator.is_tags_valid(kwargs):
+                raise KeyError("Invalid key in database")
+
+            key = kwargs[VarietyPopulator.Tags.MAIN]
+            if key not in self._variety_populator:
+                raise KeyError(f"'{key}' does nat match any keys")
+
+        elif DatabasePopulator.Tags.MAIN in kwargs:
+
+            if not self._database_populator.is_tags_valid(kwargs):
+                raise KeyError("Invalid key in database")
+
+            key = kwargs[DatabasePopulator.Tags.MAIN]
+            if key not in self._database_populator:
+                raise KeyError(f"'{key}' has not been created yet")
+
+        elif 'rand' in kwargs:
+            if not lists.is_iterable(kwargs['rand']):
+                raise ValueError("Rand must be iterable (not including string)")
+        else:
+            raise KeyError(f"No handler found for keys in '{kwargs.keys()}'")
+
+        return "<tested>"
+
+    def _handle_string_input(self, **kwargs):
 
         if VarietyPopulator.Tags.MAIN in kwargs:
 
@@ -91,7 +116,7 @@ class TextPopulator:
             else:
                 default_value = None
 
-            if DatabasePopulator.Tags.POST_OP in kwargs and not is_test:
+            if DatabasePopulator.Tags.POST_OP in kwargs:
                 fn = kwargs[DatabasePopulator.Tags.POST_OP]
                 value = self._database_populator.get_replacement(
                     key,
@@ -133,14 +158,17 @@ class TextPopulator:
                 start_idx = open_parenthesis_stack.pop()
                 end_idx = itr+1
                 segment = text[start_idx:end_idx]
-                replacement = fn(segment)
 
-                text = "".join((
-                    text[:start_idx],
-                    replacement,
-                    text[end_idx:]
-                ))
-                itr = start_idx
+                kwargs = ast.literal_eval(segment)
+                replacement = fn(**kwargs)
+
+                if replacement is not None:
+                    text = "".join((
+                        text[:start_idx],
+                        replacement,
+                        text[end_idx:]
+                    ))
+                    itr = start_idx
 
             itr += 1
         if len(open_parenthesis_stack) == 0:

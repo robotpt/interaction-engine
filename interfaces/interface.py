@@ -14,7 +14,7 @@ class Interface:
             error_output_fn=None,
             error_input_fn=None,
             pickled_database=None,
-            is_create_db_key_if_not_exist=True,
+            is_create_db_key_if_not_exist=False,
     ):
         self._output_input_fns = {
             Message.Type.MULTIPLE_CHOICE: (
@@ -73,15 +73,22 @@ class Interface:
                 return self.run(message)
 
         # Write user input into the database
+        key = message.result_db_key
         if (
-                message.result_db_key is not None
+                key is not None
                 and self._db is not None
         ):
             if (
-                    message.result_db_key not in self._db
+                    key not in self._db
                     and self._is_create_db_key_if_not_exist
             ):
-                self._db.create_key(message.result_db_key)
+                self._db.create_key(key)
+
+            if message.is_append_result:
+                result = [result]
+                if self._db.is_set(key):
+                    result = self._db.get(key) + result
+
             self._db.set(message.result_db_key, result)
 
         return result

@@ -53,3 +53,6 @@ class DatabasePopulator(BasePopulator):
             self._db.set(key, new_value)
 
         return convert_fn(value)
+
+    def __contains__(self, key):
+        return key in self._db
