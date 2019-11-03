@@ -51,6 +51,7 @@ class TextPopulator:
             return False
 
     def _test_string_input(self, text):
+        # TODO: Test should be able to handle unset db entries by checking if they exist, but are unset
         return self._handle_string_input(text, is_test=True)
 
     def _handle_string_input(self, text, is_test=False):
@@ -100,7 +101,7 @@ class TextPopulator:
             else:
                 value = self._database_populator.get_replacement(
                     key,
-                    default_value = default_value,
+                    default_value=default_value,
                 )
 
             return value

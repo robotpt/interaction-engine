@@ -10,11 +10,9 @@ class TestNode(unittest.TestCase):
         transitions = ['great', 'good', 'too bad']
         n = Node(
             name='name',
-            message=Message(
-                content='How are you?',
-                options=options,
-                message_type='multiple choice'
-            ),
+            content='How are you?',
+            options=options,
+            message_type='multiple choice',
             transitions=transitions
         )
         self.assertEqual(
@@ -33,11 +31,9 @@ class TestNode(unittest.TestCase):
         transition = 'oh'
         n = Node(
             name='name',
-            message=Message(
-                content='How are you?',
-                options=options,
-                message_type='multiple choice'
-            ),
+            content='How are you?',
+            options=options,
+            message_type='multiple choice',
             transitions=transition
         )
         for i in range(len(options)):
@@ -62,11 +58,9 @@ class TestNode(unittest.TestCase):
 
         n = Node(
             name='check grade',
-            message=Message(
-                content='How did you do?',
-                options='is how I did',
-                message_type='direct input'
-            ),
+            content='How did you do?',
+            options='is how I did',
+            message_type='direct input',
             transitions=transitions,
             transition_fn=transition_fn,
         )
@@ -125,13 +119,11 @@ class TestNode(unittest.TestCase):
             options, message_type, transitions, transition_fn = set_
             node = Node(
                 'name',
-                Message(
-                    content='Here is a question, or is it?',
-                    options=options,
-                    message_type=message_type
-                ),
-                transitions,
-                transition_fn
+                content='Here is a question, or is it?',
+                options=options,
+                message_type=message_type,
+                transitions=transitions,
+                transition_fn=transition_fn
             )
             self.assertEqual(
                 Node,
@@ -144,12 +136,10 @@ class TestNode(unittest.TestCase):
                 ValueError,
                 Node,
                 'name',
-                Message(
-                    content='Here is a question, or is it?',
-                    options=options,
-                    message_type=message_type
-                ),
-                transitions,
-                transition_fn
+                content='Here is a question, or is it?',
+                options=options,
+                message_type=message_type,
+                transitions=transitions,
+                transition_fn=transition_fn
             )
 

@@ -6,11 +6,11 @@ content = 'Question'
 options = ['left', 'right']
 
 
-message = Message(
-    content=content,
-    options=options,
-    message_type=Message.Type.MULTIPLE_CHOICE,
-)
+message_kwargs = {
+    'content': content,
+    'options': options,
+    'message_type': Message.Type.MULTIPLE_CHOICE,
+}
 
 
 def left_option():
@@ -23,18 +23,18 @@ def right_option():
 
 node1 = Node(
     name='node1',
-    message=message,
-    transitions=['node2', 'node1']
+    transitions=['node2', 'node1'],
+    **message_kwargs,
 )
 node2 = Node(
     name='node2',
-    message=message,
-    transitions=['node1', 'node3']
+    transitions=['node1', 'node3'],
+    **message_kwargs,
 )
 node3 = Node(
     name='node3',
-    message=message,
-    transitions=['exit', 'exit']
+    transitions=['exit', 'exit'],
+    **message_kwargs,
 )
 
 
@@ -50,8 +50,8 @@ class TestDirectedGraph(unittest.TestCase):
 
         for _ in range(10):
             self.assertEqual(
-                message,
-                directed_graph.get_message()
+                Message(**message_kwargs).content,
+                directed_graph.get_message().content
             )
 
             for _ in range(10):

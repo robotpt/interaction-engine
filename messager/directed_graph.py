@@ -1,4 +1,3 @@
-from data_structures import Message
 from robotpt_common_utils import lists
 from messager.node import Node
 from messager.base_messenger import BaseMessenger
@@ -119,54 +118,46 @@ fakebar,fake-bar
 
     ask_name = Node(
         name='ask name',
-        message=Message(
-            content="What's your name?",
-            options='Okay',
-            message_type='direct input',
-            result_db_key='user_name',
-            result_type=str,
-            tests=lambda x: len(x) > 1,
-            error_message='Enter something with at least two letters',
-            is_confirm=True,
-            text_populator=text_populator,
-        ),
+        content="What's your name?",
+        options='Okay',
+        message_type='direct input',
+        result_db_key='user_name',
+        result_type=str,
+        tests=lambda x: len(x) > 1,
+        error_message='Enter something with at least two letters',
+        is_confirm=True,
+        text_populator=text_populator,
         transitions='ask age'
     )
     ask_age = Node(
         name='ask age',
-        message=Message(
-            content="Alright, {'db': 'user_name'}, how old are you?",
-            options='years_old',
-            message_type='direct input',
-            result_type=float,
-            result_db_key='user_age',
-            tests=[
-                lambda x: x >= 0,
-                lambda x: x <= 200,
-            ],
-            error_message='Enter a number between 0 and 200',
-            text_populator=text_populator,
-        ),
+        content="Alright, {'db': 'user_name'}, how old are you?",
+        options='years_old',
+        message_type='direct input',
+        result_type=float,
+        result_db_key='user_age',
+        tests=[
+            lambda x: x >= 0,
+            lambda x: x <= 200,
+        ],
+        error_message='Enter a number between 0 and 200',
+        text_populator=text_populator,
         transitions='how are they'
     )
     how_are_they = Node(
         name='how are they',
-        message=Message(
-            content='How are you?',
-            options=['Good', 'Okay', 'Bad'],
-            message_type='multiple choice',
-            text_populator=text_populator,
-        ),
+        content='How are you?',
+        options=['Good', 'Okay', 'Bad'],
+        message_type='multiple choice',
+        text_populator=text_populator,
         transitions=['psych question', 'psych question', 'exit'],
     )
     do_love_me = Node(
         name='psych question',
-        message=Message(
-            content="{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}",
-            options="Yes!",
-            message_type='multiple choice',
-            text_populator=text_populator,
-        ),
+        content="{'var': 'question', 'index': '{'db': 'question_idx', 'post-op': 'increment'}'}",
+        options="Yes!",
+        message_type='multiple choice',
+        text_populator=text_populator,
         transitions='exit',
     )
 

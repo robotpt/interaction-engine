@@ -7,24 +7,36 @@ class Node:
     def __init__(
             self,
             name,
-            message,
             transitions,
+            content,
+            options,
+            message_type,
+            result_type=str,
+            result_db_key=None,
+            tests=None,
+            is_confirm=False,
+            error_message="Please enter a valid input",
+            error_options=('Okay', 'Oops'),
+            text_populator=None,
             transition_fn=None,
     ):
-        """
-        :param name:
-        :param message:
-        :param transitions:
-        :param transition_fn: A function that returns the index of a location in transitions
-        """
         self._name = name
 
-        if type(message) is not Message:
-            raise TypeError("message should be an instance of the message class")
-        self._message = message
+        self._message = Message(
+            content=content,
+            options=options,
+            message_type=message_type,
+            result_type=result_type,
+            result_db_key=result_db_key,
+            tests=tests,
+            is_confirm=is_confirm,
+            error_message=error_message,
+            error_options=error_options,
+            text_populator=text_populator,
+        )
 
         transitions = lists.make_sure_is_iterable(transitions)
-        if not Node._is_transitions_valid(message, transitions, transition_fn):
+        if not self._is_transitions_valid(transitions, transition_fn):
             raise ValueError("Transitions should agree with message options")
         self._transitions = transitions
 
@@ -53,19 +65,18 @@ class Node:
                 raise IOError("Transition function must return an index")
             return self._transitions[idx]
 
-    @staticmethod
-    def _is_transitions_valid(message, transitions, transitions_fn=None):
+    def _is_transitions_valid(self, transitions, transitions_fn=None):
 
         is_transition_fn = transitions_fn is not None
         if is_transition_fn and not callable(transitions_fn):
             raise IOError("'transitions_fn' must be callable")
 
         num_transitions = len(transitions)
-        num_options = len(message.options)
+        num_options = len(self._message.options)
 
-        if message.message_type is Message.Type.MULTIPLE_CHOICE:
+        if self._message.message_type is Message.Type.MULTIPLE_CHOICE:
             return Node._is_valid_multiple_choice(is_transition_fn, num_options, num_transitions)
-        elif message.message_type is Message.Type.DIRECT_INPUT:
+        elif self._message.message_type is Message.Type.DIRECT_INPUT:
             return Node._is_valid_direct_entry(is_transition_fn, num_options, num_transitions)
         else:
             return NotImplementedError("Invalid message type")
