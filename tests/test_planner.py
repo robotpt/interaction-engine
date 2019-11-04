@@ -1,5 +1,5 @@
 import unittest
-from engine.planner.base_planner import BasePlanner
+from interaction_engine.planner.base_planner import BasePlanner
 
 
 class TestPlanner(unittest.TestCase):

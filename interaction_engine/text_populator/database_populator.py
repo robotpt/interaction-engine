@@ -1,5 +1,5 @@
 from pickled_database import PickledDatabase
-from engine.text_populator.base_populator import BasePopulator
+from interaction_engine.text_populator.base_populator import BasePopulator
 
 
 class DatabasePopulator(BasePopulator):

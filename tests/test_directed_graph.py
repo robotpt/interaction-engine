@@ -1,7 +1,7 @@
 import unittest
-from engine.messager.directed_graph import DirectedGraph
-from engine.messager.node import Node
-from engine.messager import Message
+from interaction_engine.messager.directed_graph import DirectedGraph
+from interaction_engine.messager.node import Node
+from interaction_engine.messager import Message
 
 content = 'Question'
 options = ['left', 'right']

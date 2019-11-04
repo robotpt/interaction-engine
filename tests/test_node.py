@@ -1,6 +1,6 @@
 import unittest
-from engine.messager.node import Node
-from engine.messager import Message
+from interaction_engine.messager.node import Node
+from interaction_engine.messager import Message
 
 
 class TestNode(unittest.TestCase):

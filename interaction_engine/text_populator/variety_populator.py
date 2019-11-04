@@ -2,7 +2,7 @@ import csv
 import random
 
 from robotpt_common_utils import lists, math_tools
-from engine.text_populator.base_populator import BasePopulator
+from interaction_engine.text_populator.base_populator import BasePopulator
 
 
 class VarietyPopulator(BasePopulator):

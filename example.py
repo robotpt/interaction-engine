@@ -2,11 +2,11 @@ import os
 
 from pickled_database import PickledDatabase
 
-from engine import InteractionEngine
-from engine.messager import Message, Node, DirectedGraph
-from engine.planner import MessagerPlanner
-from engine.text_populator import TextPopulator, DatabasePopulator, VarietyPopulator
-from engine.interfaces import TerminalInterface
+from interaction_engine import InteractionEngine
+from interaction_engine.messager import Message, Node, DirectedGraph
+from interaction_engine.planner import MessagerPlanner
+from interaction_engine.text_populator import TextPopulator, DatabasePopulator, VarietyPopulator
+from interaction_engine.interfaces import TerminalInterface
 
 
 """

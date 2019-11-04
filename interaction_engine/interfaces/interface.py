@@ -1,4 +1,4 @@
-from engine.messager.message import Message
+from interaction_engine.messager.message import Message
 from robotpt_common_utils import lists, user_input
 from pickled_database import PickledDatabase
 

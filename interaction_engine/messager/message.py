@@ -1,5 +1,5 @@
 from robotpt_common_utils import lists
-from engine.text_populator.populator import TextPopulator
+from interaction_engine.text_populator.populator import TextPopulator
 
 
 class Message:
@@ -120,8 +120,8 @@ if __name__ == "__main__":
 
     import os
     from pickled_database import PickledDatabase
-    from engine.text_populator import DatabasePopulator
-    from engine.text_populator.variety_populator import VarietyPopulator
+    from interaction_engine.text_populator import DatabasePopulator
+    from interaction_engine.text_populator.variety_populator import VarietyPopulator
 
     db_file = 'test_db.pkl'
     db = PickledDatabase(db_file)

@@ -1,5 +1,5 @@
-from engine.interfaces.interface import Interface
-from engine.messager.message import Message
+from interaction_engine.interfaces.interface import Interface
+from interaction_engine.messager.message import Message
 from robotpt_common_utils import math_tools, lists
 from pickled_database import PickledDatabase
 
