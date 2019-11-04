@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from text_populator.database_populator import DatabasePopulator
+from engine.text_populator.database_populator import DatabasePopulator
 from pickled_database import PickledDatabase
 
 

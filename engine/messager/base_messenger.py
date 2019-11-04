@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from data_structures import Message
+from engine.messager.message import Message
 
 
 class BaseMessenger(ABC):

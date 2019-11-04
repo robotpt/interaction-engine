@@ -1,8 +1,8 @@
 import ast
 import random
 
-from text_populator.variety_populator import VarietyPopulator
-from text_populator.database_populator import DatabasePopulator
+from engine.text_populator.variety_populator import VarietyPopulator
+from engine.text_populator.database_populator import DatabasePopulator
 from robotpt_common_utils import lists
 
 

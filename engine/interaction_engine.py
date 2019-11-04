@@ -1,6 +1,6 @@
-from messager.base_messenger import BaseMessenger
-from interfaces.interface import Interface
-from planner.messanger_planner import MessagerPlanner
+from engine.messager.base_messenger import BaseMessenger
+from engine.interfaces.interface import Interface
+from engine.planner.messanger_planner import MessagerPlanner
 
 from robotpt_common_utils import lists
 

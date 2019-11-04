@@ -1,6 +1,6 @@
 import unittest
 
-from text_populator.base_populator import BasePopulator
+from engine.text_populator.base_populator import BasePopulator
 from robotpt_common_utils import lists
 
 main_tags = ['foo', 'bar']

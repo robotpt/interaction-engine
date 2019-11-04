@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from text_populator.variety_populator import VarietyPopulator
+from engine.text_populator.variety_populator import VarietyPopulator
 
 file1_path = 'file1.csv'
 file1_contents = """

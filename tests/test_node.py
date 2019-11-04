@@ -1,6 +1,6 @@
 import unittest
-from messager.node import Node
-from data_structures import Message
+from engine.messager.node import Node
+from engine.messager import Message
 
 
 class TestNode(unittest.TestCase):

@@ -1,18 +1,12 @@
 import os
 
-
-from engine.interaction_engine import InteractionEngine
-
-from planner.messanger_planner import MessagerPlanner
-from messager.directed_graph import DirectedGraph
-from messager.node import Node
-from data_structures import Message
-from text_populator import TextPopulator
-from text_populator.database_populator import DatabasePopulator
-from text_populator.variety_populator import VarietyPopulator
-
-from interfaces.terminal_interface import TerminalInterface
 from pickled_database import PickledDatabase
+
+from engine import InteractionEngine
+from engine.messager import Message, Node, DirectedGraph
+from engine.planner import MessagerPlanner
+from engine.text_populator import TextPopulator, DatabasePopulator, VarietyPopulator
+from engine.interfaces import TerminalInterface
 
 
 """

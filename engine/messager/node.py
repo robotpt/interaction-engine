@@ -1,4 +1,4 @@
-from data_structures import Message
+from engine.messager.message import Message
 from robotpt_common_utils import lists, math_tools
 
 

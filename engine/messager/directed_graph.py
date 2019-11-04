@@ -1,6 +1,6 @@
 from robotpt_common_utils import lists
-from messager.node import Node
-from messager.base_messenger import BaseMessenger
+from engine.messager.node import Node
+from engine.messager.base_messenger import BaseMessenger
 
 
 # TODO: check that can reach exit from all nodes, eventually
@@ -77,9 +77,9 @@ if __name__ == '__main__':
 
     import os
     from pickled_database import PickledDatabase
-    from text_populator import TextPopulator
-    from text_populator.database_populator import DatabasePopulator
-    from text_populator.variety_populator import VarietyPopulator
+    from engine.text_populator import TextPopulator
+    from engine.text_populator import DatabasePopulator
+    from engine.text_populator.variety_populator import VarietyPopulator
 
     db_file = 'test_db.pkl'
     db = PickledDatabase(db_file)
@@ -168,7 +168,7 @@ fakebar,fake-bar
         start_node='ask name'
     )
 
-    from interfaces.terminal_interface import TerminalInterface
+    from engine.interfaces.terminal_interface import TerminalInterface
     from pickled_database import PickledDatabase
 
     interface = TerminalInterface(pickled_database=db)
