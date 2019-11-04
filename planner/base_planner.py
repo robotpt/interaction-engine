@@ -1,7 +1,7 @@
 from robotpt_common_utils import lists
 
 
-class Planner:
+class BasePlanner:
 
     def __init__(self, possible_plans):
         possible_plans = lists.make_sure_is_iterable(possible_plans)

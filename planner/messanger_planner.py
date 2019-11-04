@@ -1,9 +1,9 @@
-from engine.planner import Planner
+from planner.base_planner import BasePlanner
 from robotpt_common_utils import lists
 from messager.base_messenger import BaseMessenger
 
 
-class MessagerPlanner(Planner):
+class MessagerPlanner(BasePlanner):
 
     def __init__(self, possible_plans):
 
