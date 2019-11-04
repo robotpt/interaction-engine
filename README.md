@@ -1,11 +1,99 @@
-README
-======
+# README
 
-A framework for turn-taking interactions.  See `example.py` for usage. 
+A framework for turn-taking interactions. 
 
+## Example
+
+This is from `example.py`, using the terminal interface, and demonstrates several things:
+
+* A plan-based structure that uses graphs to direct content flow
+* Textual variation, including ordered variation in for the pschology questions
+* Writing user input to a database
+* Reading from the database to populate text
+* Error checking through tests that are run on data input, including automatically 
+  displaying an error message, if the user gives an invalid input
+* Confirmation of valid user input, which is achieved by specifying a boolean argument 
+  when creating the message
+* The use of a generic interface class that is extended to make this interaction display
+  on the terminal
+
+
+    =====================
+    Hola
+     0. Hi
+    >>> 0
+    =====================
+    What's your name?
+    >>> AJ
+    =====================
+    'AJ', right?
+     0. Yes
+     1. No
+    >>> 1
+    =====================
+    What's your name?
+    >>> Audrow
+    =====================
+    'Audrow', right?
+     0. Yes
+     1. No
+    >>> 0
+    =====================
+    Alright, Audrow, how old are you?
+    >>> 1000
+    =====================
+    Enter a number between 0 and 200
+     0. Okay
+     1. Oops
+    >>> 0
+    =====================
+    Alright, Audrow, how old are you?
+    >>> 27
+    =====================
+    How are you?
+     0. Good
+     1. Okay
+     2. Bad
+    >>> 0
+    =====================
+    How do you feel about the following statement? 'I am the life of the party'
+     0. Strongly agree
+     1. Agree
+     2. Neutral
+     3. disagree
+     4. Strongly disagree
+    >>> 1
+    =====================
+    How do you feel about the following statement? 'I am always prepared'
+     0. Strongly agree
+     1. Agree
+     2. Neutral
+     3. disagree
+     4. Strongly disagree
+    >>> 1
+    =====================
+    How do you feel about the following statement? 'I get stressed out easily'
+     0. Strongly agree
+     1. Agree
+     2. Neutral
+     3. disagree
+     4. Strongly disagree
+    >>> 3
+    =====================
+    Bye
+     0. Bye
+     1. See ya!
+    >>> 1
+    =========================
+    Currently in the database
+    {'answers': ['Agree',
+                 'Agree',
+                 'disagree'],
+     'question_idx': 3,
+     'user_age': 27.0,
+     'user_name': 'Audrow'}
  
-Setup
------
+## Setup
 
 ### Option 1: Clone the repository
 
