@@ -61,7 +61,7 @@ class TextPopulator:
 
             key = kwargs[VarietyPopulator.Tags.MAIN]
             if key not in self._variety_populator:
-                raise KeyError(f"'{key}' does nat match any keys")
+                raise KeyError(f"'{key}' does not match any keys")
 
         elif DatabasePopulator.Tags.MAIN in kwargs:
 
