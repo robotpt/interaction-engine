@@ -1,5 +1,3 @@
-from text_populator.populator import TextPopulator
-
 import unittest
 import os
 from pickled_database import PickledDatabase

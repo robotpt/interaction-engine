@@ -78,11 +78,11 @@ class Interface:
                 key is not None
                 and self._db is not None
         ):
-            if (
-                    key not in self._db
-                    and self._is_create_db_key_if_not_exist
-            ):
-                self._db.create_key(key)
+            if key not in self._db:
+                if self._is_create_db_key_if_not_exist:
+                    self._db.create_key(key)
+                else:
+                    raise KeyError(f"'{key}' doesn't exist in the database")
 
             if message.is_append_result:
                 result = [result]
