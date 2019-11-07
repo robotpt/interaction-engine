@@ -25,6 +25,7 @@ class VarietyPopulator(BasePopulator):
                 self.Tags.IS_WRAP_INDEX
             ]
         )
+
         self._variations = VarietyPopulator._create_dict(
             files,
             code_key_in_file=code_key_in_file,
@@ -54,6 +55,13 @@ class VarietyPopulator(BasePopulator):
 
     def __contains__(self, key):
         return key in self._variations
+
+    @property
+    def keys(self):
+        return list(self._variations.keys())
+
+    def values(self, key):
+        return self._variations[key]
 
     @staticmethod
     def _create_dict(

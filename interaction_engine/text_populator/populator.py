@@ -20,16 +20,18 @@ class TextPopulator:
             open_symbol='{',
             closed_symbol='}',
     ):
-        if type(variety_populator) is not VarietyPopulator:
-            raise TypeError
         self._variety_populator = variety_populator
 
-        if type(database_populator) is not DatabasePopulator:
-            raise TypeError
         self._database_populator = database_populator
 
         self._open_symbol = open_symbol
         self._closed_symbol = closed_symbol
+
+        try:
+            self._test_variety_populator(self._variety_populator)
+            self._test_database_populator(self._database_populator)
+        except Exception as e:
+            raise e
 
     def run(self, text):
         return TextPopulator._parenthetic_processor(
@@ -50,6 +52,17 @@ class TextPopulator:
         except Exception as e:
             raise e
         return True
+
+    def _test_variety_populator(self, variety_populator):
+        if type(variety_populator) is not VarietyPopulator:
+            raise TypeError
+        for key in variety_populator.keys:
+            for value in variety_populator.values(key):
+                self.is_valid(value)
+
+    def _test_database_populator(self, database_populator):
+        if type(database_populator) is not DatabasePopulator:
+            raise TypeError
 
     def _test_kwargs(self, **kwargs):
         # TODO: Test should be able to key unset db entries by checking if they exist, but are unset
