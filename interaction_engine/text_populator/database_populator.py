@@ -44,7 +44,7 @@ class DatabasePopulator(BasePopulator):
         elif default_value is not None:
             value = default_value
         else:
-            raise KeyError("No key found and no default value provided")
+            raise KeyError(f"No value for key '{key}' found and no default value provided")
 
         if modify_before_resaving_fn is not None:
             if modify_before_resaving_fn in DatabasePopulator._common_fns:
