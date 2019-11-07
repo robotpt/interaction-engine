@@ -107,7 +107,7 @@ class TestTextPopulator(unittest.TestCase):
                 text_to_include + text + text_to_include
             )
 
-            text = "{'ey: 'greeting'}"
+            text = "{'var: 'greeting'}"
             self.assertRaises(
                 SyntaxError,
                 self._text_populator.is_valid,
@@ -115,6 +115,79 @@ class TestTextPopulator(unittest.TestCase):
             )
             self.assertRaises(
                 SyntaxError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+            text = "{var': 'greeting'}"
+            self.assertRaises(
+                SyntaxError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include
+            )
+            self.assertRaises(
+                SyntaxError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+            text = "'var': 'greeting'}"
+            self.assertRaises(
+                ValueError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include
+            )
+            self.assertRaises(
+                ValueError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+            text = "{'var': 'greeting'"
+            self.assertRaises(
+                ValueError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include
+            )
+            self.assertRaises(
+                ValueError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+
+    def test_bad_db_key(self):
+        for text_to_include in ['aeunheu neuhaen ', 'abc', 'a', '']:
+            text = "{'db': 'not a key'}"
+            self.assertRaises(
+                KeyError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include,
+                )
+            self.assertRaises(
+                KeyError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+
+    def test_bad_multiple_arg_key(self):
+        for text_to_include in ['aeunheu neuhaen ', 'abc', 'a', '']:
+            text = "{'db': 'user_name', 'foo': 'bar'}"
+            self.assertRaises(
+                KeyError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include,
+                )
+            self.assertRaises(
+                KeyError,
+                self._text_populator.run,
+                text_to_include + text + text_to_include
+            )
+
+            text = "{'var': 'greeting', 'foo': 'bar'}"
+            self.assertRaises(
+                KeyError,
+                self._text_populator.is_valid,
+                text_to_include + text + text_to_include,
+                )
+            self.assertRaises(
+                KeyError,
                 self._text_populator.run,
                 text_to_include + text + text_to_include
             )
