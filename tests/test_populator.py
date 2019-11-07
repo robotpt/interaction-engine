@@ -18,6 +18,9 @@ question,I am always prepared
 question,I get stressed out easily
 question,I have a rich vocabulary
 only one,just one
+replace1,{'var': 'replace2'}
+replace2,{'var': 'replace3'}
+replace3,Works!
 foo,foo
 foo,fake
 foobar,foo-bar
@@ -116,7 +119,7 @@ class TestTextPopulator(unittest.TestCase):
                 text_to_include + text + text_to_include
             )
 
-    def test_recursive_tags(self):
+    def test_nested_tags(self):
         test_str = (
                 "{'var': 'question', 'index': " +
                 "'{'db': 'question_idx', 'post-op': 'increment'}'}"
@@ -146,4 +149,14 @@ class TestTextPopulator(unittest.TestCase):
                 ]
             )
 
+    def test_replace_tag_with_tag(self):
 
+        test_str = "{'var': 'replace1'}"
+        final_replacement = 'Works!'
+        for text_to_include in ['aeunheu neuhaen ', 'abc', 'a', '']:
+            self.assertEqual(
+                text_to_include + final_replacement + text_to_include,
+                self._text_populator.run(
+                    text_to_include + test_str + text_to_include
+                )
+            )

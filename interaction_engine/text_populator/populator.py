@@ -168,7 +168,7 @@ class TextPopulator:
                         replacement,
                         text[end_idx:]
                     ))
-                    itr = start_idx
+                    itr = start_idx-1
 
             itr += 1
         if len(open_parenthesis_stack) == 0:
