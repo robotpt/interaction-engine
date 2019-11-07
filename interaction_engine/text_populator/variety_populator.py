@@ -1,7 +1,7 @@
 import csv
 import random
 
-from robotpt_common_utils import lists, math_tools
+from robotpt_common_utils import lists, math_tools, strings
 from interaction_engine.text_populator.base_populator import BasePopulator
 
 
@@ -17,6 +17,7 @@ class VarietyPopulator(BasePopulator):
             files,
             code_key_in_file='Code',
             text_key_in_file='Text',
+            wild_card_symbol='*',
     ):
         super().__init__(
             main_tags=self.Tags.MAIN,
@@ -31,6 +32,7 @@ class VarietyPopulator(BasePopulator):
             code_key_in_file=code_key_in_file,
             text_key_in_file=text_key_in_file,
         )
+        self._wild_card_symbol = wild_card_symbol
 
     def get_replacement(
             self,
@@ -38,8 +40,9 @@ class VarietyPopulator(BasePopulator):
             index=None,
             is_wrap_index=True
     ):
+        choices = self.values(key)
         if index is None:
-            return random.choice(self._variations[key])
+            return random.choice(choices)
         else:
             if not is_wrap_index and index > self.get_num_variations(key):
                 raise IndexError
@@ -48,10 +51,10 @@ class VarietyPopulator(BasePopulator):
             else:
                 raise ValueError("Index must be an int")
             i = index % self.get_num_variations(key)
-            return self._variations[key][i]
+            return choices[i]
 
     def get_num_variations(self, key):
-        return len(self._variations[key])
+        return len(self.values(key))
 
     def __contains__(self, key):
         return key in self._variations
@@ -61,7 +64,11 @@ class VarietyPopulator(BasePopulator):
         return list(self._variations.keys())
 
     def values(self, key):
-        return self._variations[key]
+        active_keys = strings.wildcard_search_in_list(key, self.keys)
+        values = []
+        for active_key in active_keys:
+            values += self._variations[active_key]
+        return values
 
     @staticmethod
     def _create_dict(

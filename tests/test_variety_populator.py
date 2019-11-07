@@ -9,10 +9,14 @@ Code,Text
 greeting,Hi
 greeting,Hello
 greeting,Hola
+greeting-morning,Good morning
 question,Do you like green?
 question,Do you like dogs?
 question,Do you like apples?
 question,Do you like me?
+special_question,What is a special_question?
+one-part-two,Foo
+three-part-four,Foo
 foo,foo
 foo,fake
 foobar,foo-bar
@@ -154,3 +158,61 @@ class TestVarietyPopulator(unittest.TestCase):
             VarietyPopulator._create_dict,
             duplicate_entry_path
         )
+
+    def test_wildcard_symbol(self):
+
+        vp = VarietyPopulator(file1_path)
+
+        tag = 'greeting*'
+        num_entries = vp.get_num_variations(tag)
+        self.assertEqual(
+            4,
+            num_entries
+        )
+        entries = []
+        for i in range(num_entries):
+            entries.append(vp.get_replacement(
+                tag,
+                index=i,
+            ))
+
+        tag = '*question'
+        num_entries = vp.get_num_variations(tag)
+        self.assertEqual(
+            5,
+            num_entries
+        )
+        entries = []
+        for i in range(num_entries):
+            entries.append(vp.get_replacement(
+                tag,
+                index=i,
+            ))
+
+        tag = '*part*'
+        num_entries = vp.get_num_variations(tag)
+        self.assertEqual(
+            2,
+            num_entries
+        )
+        entries = []
+        for i in range(num_entries):
+            entries.append(vp.get_replacement(
+                tag,
+                index=i,
+            ))
+
+    def test_exception_on_wildcard_symbols(self):
+        vp = VarietyPopulator(file1_path)
+
+        for tag in ['abc.', 'waoh$$', '(what)']:
+            self.assertRaises(
+                ValueError,
+                vp.get_num_variations,
+                tag
+            )
+            self.assertRaises(
+                ValueError,
+                vp.get_replacement,
+                tag
+            )
