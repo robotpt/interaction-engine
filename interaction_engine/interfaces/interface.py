@@ -35,7 +35,7 @@ class Interface:
 
         if (
                 pickled_database is not None
-                and type(pickled_database) is not PickledDatabase
+                and not issubclass(pickled_database.__class__, PickledDatabase)
         ):
             raise TypeError
         self._db = pickled_database
