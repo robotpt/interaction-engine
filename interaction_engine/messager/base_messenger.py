@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from interaction_engine.messager.message import Message
 
 
 class BaseMessenger(ABC):
@@ -11,14 +10,19 @@ class BaseMessenger(ABC):
     def name(self):
         return self._name
 
+    @property
     @abstractmethod
     def is_active(self) -> bool:
         pass
 
     @abstractmethod
-    def get_message(self) -> Message:
+    def get_message(self):
         pass
 
     @abstractmethod
     def transition(self, arg) -> None:
+        pass
+
+    @abstractmethod
+    def reset(self):
         pass

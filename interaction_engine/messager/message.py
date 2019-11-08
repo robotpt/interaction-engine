@@ -1,8 +1,9 @@
 from robotpt_common_utils import lists
 from interaction_engine.text_populator.populator import TextPopulator
+from interaction_engine.messager.base_messenger import BaseMessenger
 
 
-class Message:
+class Message(BaseMessenger):
 
     class Type:
         MULTIPLE_CHOICE = "multiple choice"
@@ -31,6 +32,7 @@ class Message:
         except Exception as e:
             raise e
         self._content = content
+        super().__init__(self._content)
 
         options = lists.make_sure_is_iterable(options)
         try:
@@ -53,6 +55,23 @@ class Message:
 
         self._error_message = error_message
         self._error_options = error_options
+
+        # Used to make message type able to be played in engine
+        self._is_active = None
+        self.reset()
+
+    @property
+    def is_active(self) -> bool:
+        return self._is_active
+
+    def reset(self):
+        self._is_active = True
+
+    def get_message(self):
+        return self
+
+    def transition(self, _) -> None:
+        self._is_active = False
 
     def _test_markup(self, text):
 
