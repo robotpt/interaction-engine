@@ -2,6 +2,7 @@ from interaction_engine.interfaces.interface import Interface
 from interaction_engine.messager.message import Message
 from robotpt_common_utils import math_tools, lists
 from pickled_database import PickledDatabase
+import textwrap
 
 
 class TerminalInterface(Interface):
@@ -24,11 +25,17 @@ class TerminalInterface(Interface):
         )
 
 
-def print_content(message):
+def print_content(message, width=50):
+
     if type(message) is not Message:
         raise ValueError("Must input message class")
+
     print("=====================")
-    print(message.content)
+    wrapper = textwrap.TextWrapper(width=width)
+    text_list = wrapper.wrap(text=message.content)
+
+    for element in text_list:
+        print(element)
 
 
 def print_multiple_choice(message):
