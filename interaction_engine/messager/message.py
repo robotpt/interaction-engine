@@ -34,12 +34,8 @@ class Message(BaseMessenger):
         self._content = content
         super().__init__(self._content)
 
-        options = lists.make_sure_is_iterable(options)
-        try:
-            self._test_markup(options)
-        except Exception as e:
-            raise e
-        self._options = options
+        self._options = None
+        self.options = options
 
         self._message_type = message_type
 
@@ -100,6 +96,15 @@ class Message(BaseMessenger):
     @property
     def options(self):
         return [self._markup(o) for o in self._options]
+
+    @options.setter
+    def options(self, options):
+        options = lists.make_sure_is_iterable(options)
+        try:
+            self._test_markup(options)
+        except Exception as e:
+            raise e
+        self._options = options
 
     @property
     def message_type(self):

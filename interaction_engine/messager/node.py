@@ -8,9 +8,10 @@ class Node:
             self,
             name,
             transitions,
-            content,
-            options,
-            message_type,
+            message=None,
+            content=None,
+            options=None,
+            message_type=None,
             result_type=str,
             result_db_key=None,
             is_append_result=False,
@@ -23,19 +24,23 @@ class Node:
     ):
         self._name = name
 
-        self._message = Message(
-            content=content,
-            options=options,
-            message_type=message_type,
-            result_type=result_type,
-            result_db_key=result_db_key,
-            is_append_result=is_append_result,
-            tests=tests,
-            is_confirm=is_confirm,
-            error_message=error_message,
-            error_options=error_options,
-            text_populator=text_populator,
-        )
+        if message is None:
+            message = Message(
+                content=content,
+                options=options,
+                message_type=message_type,
+                result_type=result_type,
+                result_db_key=result_db_key,
+                is_append_result=is_append_result,
+                tests=tests,
+                is_confirm=is_confirm,
+                error_message=error_message,
+                error_options=error_options,
+                text_populator=text_populator,
+            )
+        elif options is not None:
+            message.options = options
+        self._message = message
 
         transitions = lists.make_sure_is_iterable(transitions)
         if not self._is_transitions_valid(transitions, transition_fn):
