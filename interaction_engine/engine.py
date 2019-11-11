@@ -28,9 +28,12 @@ class InteractionEngine:
 
     def run(self):
         while self._plan.is_active:
-            messager = self._messagers[self._plan.pop_plan()]
-            messager.reset()
-            while messager.is_active:
-                msg = messager.get_message()
-                user_response = self._interface.run(msg)
-                messager.transition(user_response)
+            self.run_next_plan()
+
+    def run_next_plan(self):
+        messager = self._messagers[self._plan.pop_plan()]
+        messager.reset()
+        while messager.is_active:
+            msg = messager.get_message()
+            user_response = self._interface.run(msg)
+            messager.transition(user_response)

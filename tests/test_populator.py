@@ -93,6 +93,22 @@ class TestTextPopulator(unittest.TestCase):
                 ]
             )
 
+            text = "{greeting}"
+            self.assertTrue(
+                self._text_populator.is_valid(
+                    text_to_include + text + text_to_include
+                )
+            )
+            self.assertTrue(
+                self._text_populator.run(
+                    text_to_include + text + text_to_include
+                ) in [
+                    text_to_include + t + text_to_include for t in [
+                        'Hi', 'Hello', 'Hola'
+                    ]
+                ]
+            )
+
     def test_bad_string(self):
         for text_to_include in ['aeunheu neuhaen ', 'abc', 'a', '']:
             text = "{'not a key': 'greeting'}"
@@ -240,7 +256,7 @@ class TestTextPopulator(unittest.TestCase):
         bad_variation_file_contents = """
         Code,Text
         greeting,Hi
-        greeting,Hello{'var': foo}
+        greeting,Hello{'var': 'foo'}
         """
         db = PickledDatabase(db_file)
         db.create_key_if_not_exists('user_name')
@@ -253,7 +269,7 @@ class TestTextPopulator(unittest.TestCase):
         variety_populator_ = VarietyPopulator(bad_variation_file)
         database_populator_ = DatabasePopulator(db_file)
         self.assertRaises(
-            ValueError,
+            KeyError,
             TextPopulator,
             variety_populator_,
             database_populator_,

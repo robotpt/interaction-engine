@@ -64,8 +64,15 @@ class TextPopulator:
         if type(database_populator) is not DatabasePopulator:
             raise TypeError
 
-    def _test_kwargs(self, **kwargs):
+    def _test_kwargs(self, segment):
         # TODO: Test should be able to key unset db entries by checking if they exist, but are unset
+
+        try:
+            kwargs = ast.literal_eval(segment)
+            if type(kwargs) is not dict:
+                raise ValueError
+        except ValueError:
+            kwargs = {VarietyPopulator.Tags.MAIN: segment[1:-1]}
 
         if VarietyPopulator.Tags.MAIN in kwargs:
 
@@ -91,9 +98,14 @@ class TextPopulator:
         else:
             raise KeyError(f"No handler found for keys in '{kwargs.keys()}'")
 
-        return "<tested>"
+        return "tested"
 
-    def _handle_string_input(self, **kwargs):
+    def _handle_string_input(self, segment):
+
+        try:
+            kwargs = ast.literal_eval(segment)
+        except ValueError:
+            kwargs = {VarietyPopulator.Tags.MAIN: segment[1:-1]}
 
         if VarietyPopulator.Tags.MAIN in kwargs:
 
@@ -172,8 +184,7 @@ class TextPopulator:
                 end_idx = itr+1
                 segment = text[start_idx:end_idx]
 
-                kwargs = ast.literal_eval(segment)
-                replacement = fn(**kwargs)
+                replacement = fn(segment)
 
                 if replacement is not None:
                     text = "".join((
