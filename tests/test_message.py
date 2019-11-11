@@ -64,7 +64,7 @@ class TestMessage(unittest.TestCase):
                 self.assertTrue(o in greetings)
 
     def test_function_markup(self):
-        greetings_fn_return = 'Foo'
+        greetings_fn_return = ['Foo']
         message = Message(
             content=lambda: random.choice(greetings_fn_return),
             options=lambda: greetings_fn_return,
@@ -75,7 +75,9 @@ class TestMessage(unittest.TestCase):
 
         true_greetings = ['Hi', 'Hello', 'Hola']
         for _ in range(1):
-            self.assertTrue(message.content in true_greetings)
-            for o in message.options:
+            content = message.content
+            self.assertTrue(content in true_greetings)
+            options = message.options
+            for o in options:
                 self.assertTrue(o in true_greetings)
 

@@ -74,20 +74,26 @@ class Message(BaseMessenger):
         if self._text_populator is None:
             return True
 
-        if lists.is_iterable(text):
-            return all([self._text_populator.is_valid(t) for t in text])
-        else:
-            return self._text_populator.is_valid(text)
+        if callable(text):
+            text = text()
+
+        text = lists.make_sure_is_iterable(text)
+        return all([self._text_populator.is_valid(t) for t in text])
 
     def _markup(self, text):
 
         if self._text_populator is None:
             return text
 
-        if lists.is_iterable(text):
-            return [self._text_populator.run(t) for t in text]
+        if callable(text):
+            text = text()
+
+        text = lists.make_sure_is_iterable(text)
+        result = [self._text_populator.run(t) for t in text]
+        if len(result) is 1:
+            return result[0]
         else:
-            return self._text_populator.run(text)
+            return result
 
     @property
     def content(self):
@@ -95,11 +101,12 @@ class Message(BaseMessenger):
 
     @property
     def options(self):
-        return [self._markup(o) for o in self._options]
+        return lists.make_sure_is_iterable(
+            self._markup(self._options)
+        )
 
     @options.setter
     def options(self, options):
-        options = lists.make_sure_is_iterable(options)
         try:
             self._test_markup(options)
         except Exception as e:
