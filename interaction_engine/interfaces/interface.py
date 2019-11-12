@@ -57,7 +57,7 @@ class Interface:
         # Rerun if user put in bad entry
         try:
             result = message.result_type(result_str)
-            is_valid = Interface._do_tests_pass(message, result)
+            is_valid = self._do_tests_pass(message, result)
         except (ValueError, TypeError):
             is_valid = False
         if not is_valid:
@@ -85,11 +85,13 @@ class Interface:
                     raise KeyError(f"'{key}' doesn't exist in the database")
 
             if message.is_append_result:
-                result = [result]
+                save_result = [result]
                 if self._db.is_set(key):
-                    result = self._db.get(key) + result
+                    save_result = self._db.get(key) + save_result
+            else:
+                save_result = result
 
-            self._db.set(message.result_db_key, result)
+            self._db.set(message.result_db_key, save_result)
 
         return result
 
