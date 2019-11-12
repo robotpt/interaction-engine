@@ -68,7 +68,7 @@ class Node:
             return self._transitions[0]
         elif self._transition_fn is None:
             return self._transitions[
-                self.message.options.index(user_input)
+                self.message.last_options.index(user_input)
             ]
         else:
             idx = self._transition_fn(user_input)

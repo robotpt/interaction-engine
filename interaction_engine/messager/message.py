@@ -54,6 +54,7 @@ class Message(BaseMessenger):
 
         # Used to make message type able to be played in engine
         self._is_active = None
+        self._last_options = None
         self.reset()
 
     @property
@@ -62,6 +63,7 @@ class Message(BaseMessenger):
 
     def reset(self):
         self._is_active = True
+        self._last_options = None
 
     def get_message(self):
         return self
@@ -101,9 +103,14 @@ class Message(BaseMessenger):
 
     @property
     def options(self):
-        return lists.make_sure_is_iterable(
+        self._last_options = lists.make_sure_is_iterable(
             self._markup(self._options)
         )
+        return self._last_options
+
+    @property
+    def last_options(self):
+        return self._last_options
 
     @options.setter
     def options(self, options):
