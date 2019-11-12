@@ -108,7 +108,7 @@ class VarietyPopulator(BasePopulator):
                 text = row[text_key_in_file]
                 if code in variations_dict:
                     if text in variations_dict[code]:
-                        raise ValueError("Duplicate entry")
+                        raise ValueError(f"Duplicate entry '{code}': '{text}'")
                     variations_dict[code].append(text)
                 else:
                     variations_dict[code] = [text]

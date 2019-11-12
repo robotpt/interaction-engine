@@ -3,22 +3,26 @@ from robotpt_common_utils import lists
 
 
 def most_recent_options_graph(
+        name,
         content,
         options,
         max_num_options=None,
         new_entry_text_choice='Something else',
-        new_entry_message='What do you plan?',
+        new_entry_message=None,
         new_entry_options='Okay',
         new_entry_error_message=None,
         result_convert_from_str_fn=str,
         tests=None,
         save_db_key=None,
         text_populator=None,
+        is_append_result=True,
 ):
     if not callable(options):
         raise ValueError("Options should be callable")
+    if new_entry_message is None:
+        new_entry_message = content
     return DirectedGraph(
-        name='where',
+        name=name,
         start_node='ask',
         nodes=[
             Node(
@@ -34,7 +38,7 @@ def most_recent_options_graph(
                 ),
                 message_type=Message.Type.MULTIPLE_CHOICE,
                 result_db_key=save_db_key,
-                is_append_result=True,
+                is_append_result=is_append_result,
                 text_populator=text_populator,
                 transitions=['exit'] * max_num_options + ["user entry"]
             ),
@@ -44,7 +48,7 @@ def most_recent_options_graph(
                 options=new_entry_options,
                 message_type=Message.Type.DIRECT_INPUT,
                 result_db_key=save_db_key,
-                is_append_result=True,
+                is_append_result=is_append_result,
                 result_convert_from_str_fn=result_convert_from_str_fn,
                 tests=tests,
                 error_message=new_entry_error_message,
