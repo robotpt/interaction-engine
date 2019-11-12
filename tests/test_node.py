@@ -142,4 +142,3 @@ class TestNode(unittest.TestCase):
                 transitions=transitions,
                 transition_fn=transition_fn
             )
-

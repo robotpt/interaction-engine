@@ -22,6 +22,11 @@ class DirectedGraph(BaseMessenger):
         for node in nodes:
             self._add_node(node)
 
+        try:
+            self.check_node_transitions(exit_code, nodes)
+        except Exception as e:
+            raise e from e
+
         if start_node not in self._nodes_dict:
             raise KeyError
 
@@ -31,6 +36,17 @@ class DirectedGraph(BaseMessenger):
         self._current_node_name = None
         self._is_active = None
         self.reset()
+
+    def check_node_transitions(self, exit_code, nodes):
+        is_exit_node = False
+        for node in nodes:
+            for transition_node in node.transitions:
+                if transition_node is exit_code:
+                    is_exit_node = True
+                elif transition_node not in list(self._nodes_dict.keys()):
+                    raise ValueError(f"Not all transitions are valid: '{transition_node}'")
+        if not is_exit_node:
+            raise ValueError("No exit node specified")
 
     def reset(self):
         self._current_node_name = self._start_node_name

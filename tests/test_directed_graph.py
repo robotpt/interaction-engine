@@ -91,3 +91,80 @@ class TestDirectedGraph(unittest.TestCase):
                 )
 
             directed_graph.reset()
+
+    def test_bad_node_transitions(self):
+
+        # transition to a nonexistent node
+        self.assertRaises(
+            ValueError,
+            lambda: DirectedGraph(
+                name="Foo",
+                start_node="node1",
+                nodes=[
+                    Node(
+                        name='node1',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='not a node'
+                    ),
+                    Node(
+                        name='node2',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='exit'
+                    ),
+                ]
+            )
+        )
+
+        # No exit
+        self.assertRaises(
+            ValueError,
+            lambda: DirectedGraph(
+                name="Foo",
+                start_node="node1",
+                nodes=[
+                    Node(
+                        name='node1',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='node2'
+                    ),
+                    Node(
+                        name='node2',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='node1'
+                    ),
+                ]
+            )
+        )
+
+        # Bad start node
+        self.assertRaises(
+            KeyError,
+            lambda: DirectedGraph(
+                name="Foo",
+                start_node="node that doesn't exist",
+                nodes=[
+                    Node(
+                        name='node1',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='node2'
+                    ),
+                    Node(
+                        name='node2',
+                        content='foo',
+                        options='bar',
+                        message_type=Message.Type.MULTIPLE_CHOICE,
+                        transitions='exit'
+                    ),
+                ]
+            )
+        )

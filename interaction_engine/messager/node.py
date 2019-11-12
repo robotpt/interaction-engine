@@ -56,6 +56,10 @@ class Node:
         return self._name
 
     @property
+    def transitions(self):
+        return self._transitions
+
+    @property
     def message(self):
         return self._message
 
