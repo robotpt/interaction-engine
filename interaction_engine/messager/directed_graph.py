@@ -122,7 +122,7 @@ fakebar,fake-bar
         options='Okay',
         message_type='direct input',
         result_db_key='user_name',
-        result_type=str,
+        result_convert_from_str_fn=str,
         tests=lambda x: len(x) > 1,
         error_message='Enter something with at least two letters',
         is_confirm=True,
@@ -134,7 +134,7 @@ fakebar,fake-bar
         content="Alright, {'db': 'user_name'}, how old are you?",
         options='years_old',
         message_type='direct input',
-        result_type=float,
+        result_convert_from_str_fn=float,
         result_db_key='user_age',
         tests=[
             lambda x: x >= 0,

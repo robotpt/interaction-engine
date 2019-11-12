@@ -14,7 +14,7 @@ class Message(BaseMessenger):
             content,
             options,
             message_type,
-            result_type=str,
+            result_convert_from_str_fn=str,
             result_db_key=None,
             is_append_result=False,
             tests=None,
@@ -39,7 +39,7 @@ class Message(BaseMessenger):
 
         self._message_type = message_type
 
-        self._result_type = result_type
+        self._result_convert_from_str_fn = result_convert_from_str_fn
         self._result_db_key = result_db_key
         self._is_append_result = is_append_result
 
@@ -119,7 +119,7 @@ class Message(BaseMessenger):
 
     @property
     def result_type(self):
-        return self._result_type
+        return self._result_convert_from_str_fn
 
     @property
     def result_db_key(self):

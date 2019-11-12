@@ -89,7 +89,7 @@ if __name__ == '__main__':
         content='How old are you?',
         options='years_old',
         message_type='direct input',
-        result_type=float,
+        result_convert_from_str_fn=float,
         result_db_key='user_age',
         tests=[
             lambda x: x >= 0,
@@ -101,7 +101,7 @@ if __name__ == '__main__':
         content="What's your name?",
         options='Okay',
         message_type='direct input',
-        result_type=str,
+        result_convert_from_str_fn=str,
         result_db_key='user_name',
         tests=lambda x: len(x) > 1,
         error_message='Enter something with at least two letters',

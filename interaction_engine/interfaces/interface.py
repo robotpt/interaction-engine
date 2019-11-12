@@ -101,7 +101,7 @@ class Interface:
             content=f"'{str(value)}', right?",
             options=['Yes', 'No'],
             message_type=Message.Type.MULTIPLE_CHOICE,
-            result_type=str,
+            result_convert_from_str_fn=str,
             is_confirm=False
         )
 
