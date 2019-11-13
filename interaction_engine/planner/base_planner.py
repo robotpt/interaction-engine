@@ -55,12 +55,12 @@ class BasePlanner:
         self._pre_hook.append(pre_hook)
         self._post_hook.append(post_hook)
 
-    def new_plan(self, plan, prehooks=None):
+    def new_plan(self, plan, pre_hooks=None, post_hook=None):
         plan = lists.make_sure_is_iterable(plan)
         if not self._is_valid_plan(plan):
             raise ValueError("Invalid plan")
         self._plan = []
-        self.insert(plan, prehooks)
+        self.insert(plan, pre_hooks, post_hook)
 
     def _is_valid_plan(self, plan):
         plan = lists.make_sure_is_iterable(plan)
