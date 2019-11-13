@@ -28,11 +28,26 @@ class BasePlanner:
                 return False
         return True
 
+    @property
+    def plan(self):
+        return self._plan
+
     def pop_plan(self):
         return self._plan.pop(0)
 
     @property
     def is_active(self):
         return len(self._plan) > 0
+
+    def __eq__(self, other):
+        if not issubclass(other.__class__, BasePlanner):
+            raise ValueError
+        if len(self.plan) != len(other.plan):
+            return False
+        for i in range(len(self.plan)):
+            if self.plan[i] != other.plan[i]:
+                return False
+        return True
+
 
 

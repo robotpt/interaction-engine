@@ -2,7 +2,7 @@ import unittest
 from interaction_engine.planner.base_planner import BasePlanner
 
 
-class TestPlanner(unittest.TestCase):
+class TestBasePlanner(unittest.TestCase):
 
     def test_order_of_input_plan(self):
         possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
@@ -46,3 +46,18 @@ class TestPlanner(unittest.TestCase):
                 s.new_plan,
                 p
             )
+
+    def test_for_equal_plans(self):
+
+        possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
+        p1 = BasePlanner(possible_plans)
+        p2 = BasePlanner(possible_plans)
+        p3 = BasePlanner(possible_plans)
+        self.assertEqual(p1, p2)
+        self.assertEqual(p1, p3)
+
+        p1.insert(possible_plans)
+        p2.insert(possible_plans)
+        p3.insert(possible_plans[:-3])
+        self.assertEqual(p1, p2)
+        self.assertNotEqual(p1, p3)
