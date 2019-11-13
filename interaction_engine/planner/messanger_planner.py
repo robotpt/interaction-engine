@@ -10,13 +10,13 @@ class MessagerPlanner(BasePlanner):
         names = self._list_of_names(possible_plans)
         super().__init__(names)
 
-    def insert(self, plan):
+    def insert(self, plan, pre_hook=None, post_hook=None):
         names = self._list_of_names(plan)
-        super().insert(names)
+        super().insert(names, pre_hook, post_hook)
 
-    def new_plan(self, plan):
+    def new_plan(self, plan, prehook=None, post_hook=None):
         names = self._list_of_names(plan)
-        super().new_plan(names)
+        super().new_plan(names, prehook, post_hook)
 
     @staticmethod
     def _list_of_names(plans):

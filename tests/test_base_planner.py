@@ -61,3 +61,47 @@ class TestBasePlanner(unittest.TestCase):
         p3.insert(possible_plans[:-3])
         self.assertEqual(p1, p2)
         self.assertNotEqual(p1, p3)
+
+    def test_pre_hooks(self):
+
+        var = 0
+
+        def set_var_fn(value):
+            nonlocal var
+
+            def fn():
+                nonlocal var
+                var = value
+            return fn
+
+        possible_plans = ['plan1', 'plan2', 'plan3', 1, 2, 3]
+        planner = BasePlanner(possible_plans)
+
+        for i in range(1, 4):
+            # no args means identity functions are attached
+            planner.insert(i)
+
+            # these functions will modify 'var'
+            planner.insert(
+                i,
+                pre_hook=set_var_fn(i),
+                post_hook=set_var_fn(2*i)
+            )
+
+        self.assertEqual(0, var)
+        for i in range(1, 4):
+            var_at_beginning_of_loop = var
+
+            # check nothing modified with identity functions
+            plan, pre_hook, post_hook = planner.pop_plan(is_return_hooks=True)
+            pre_hook()
+            self.assertEqual(var_at_beginning_of_loop, var)
+            post_hook()
+            self.assertEqual(var_at_beginning_of_loop, var)
+
+            # check var is modified by functions
+            plan, pre_hook, post_hook = planner.pop_plan(is_return_hooks=True)
+            pre_hook()
+            self.assertEqual(i, var)
+            post_hook()
+            self.assertEqual(2*i, var)
