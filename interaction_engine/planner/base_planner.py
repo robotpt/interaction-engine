@@ -18,7 +18,7 @@ class BasePlanner:
     def insert(self, plan, pre_hook=None, post_hook=None):
         plan = lists.make_sure_is_iterable(plan)
         if not self._is_valid_plan(plan):
-            raise ValueError("Invalid plan")
+            raise ValueError(f"Invalid plan: '{plan}'")
 
         if pre_hook is not None:
             pre_hook = lists.make_sure_is_iterable(pre_hook)
