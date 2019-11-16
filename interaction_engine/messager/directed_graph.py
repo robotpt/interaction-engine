@@ -62,8 +62,10 @@ class DirectedGraph(BaseMessenger):
 
         self._nodes_dict[node.name] = node
 
-    def get_message(self):
-        return self._nodes_dict[self.current_node].message
+    def get_message(self, node=None):
+        if node is None:
+            node = self.current_node
+        return self._nodes_dict[node].message
 
     def get_nodes(self):
         return list(self._nodes_dict)
