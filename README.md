@@ -1,5 +1,8 @@
 # README
 
+[![Build Status](https://travis-ci.com/robotpt/interaction-engine.svg?branch=master)](https://travis-ci.com/robotpt/interaction-engine)
+[![Downloads](https://pepy.tech/badge/interaction-engine)](https://pepy.tech/project/interaction-engine)
+
 A framework for turn-taking interactions. 
 
 ## Example
