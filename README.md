@@ -1,8 +1,9 @@
 # README
 
+[![PyPI version](https://badge.fury.io/py/interaction-engine.svg)](https://badge.fury.io/py/interaction-engine)
 [![Build Status](https://travis-ci.com/robotpt/interaction-engine.svg?branch=master)](https://travis-ci.com/robotpt/interaction-engine)
-[![Downloads](https://pepy.tech/badge/interaction-engine)](https://pepy.tech/project/interaction-engine)
 [![Coverage Status](https://coveralls.io/repos/github/robotpt/interaction-engine/badge.svg?branch=master)](https://coveralls.io/github/robotpt/interaction-engine?branch=master)
+[![Downloads](https://pepy.tech/badge/interaction-engine)](https://pepy.tech/project/interaction-engine)
 
 A framework for turn-taking interactions. 
 
