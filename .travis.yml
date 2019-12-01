@@ -5,7 +5,12 @@ python:
   - "3.8"
 install:
   - pip install .
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install coveralls
 script:
-  - pytest
+  - pytest --cov
+after_success:
+  - coveralls
 notifications:
   slack: interaction-lab:sKgJdsIGRbzIuhesRODOc1Xw
