@@ -55,6 +55,16 @@ class BasePlanner:
         self._pre_hook.append(pre_hook)
         self._post_hook.append(post_hook)
 
+    def update_last_inserts_hooks(self, pre_hook=None, post_hook=None):
+        _plan = self._plan.pop()
+        _pre_hook = self._pre_hook.pop()
+        _post_hook = self._post_hook.pop()
+        if pre_hook is not None:
+            _pre_hook = pre_hook
+        if post_hook is not None:
+            _post_hook = post_hook
+        self._insert_one(_plan, _pre_hook, _post_hook)
+
     def new_plan(self, plan, pre_hooks=None, post_hook=None):
         plan = lists.make_sure_is_iterable(plan)
         if not self._is_valid_plan(plan):
