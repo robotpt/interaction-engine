@@ -14,6 +14,7 @@ class Message(BaseMessenger):
             content,
             options,
             message_type,
+            args=None,
             result_convert_from_str_fn=str,
             result_db_key=None,
             is_append_result=False,
@@ -36,6 +37,10 @@ class Message(BaseMessenger):
 
         self._options = None
         self.options = options
+
+        self._args = []
+        if args is not None:
+            self.args = args
 
         self._message_type = message_type
 
@@ -119,6 +124,25 @@ class Message(BaseMessenger):
         except Exception as e:
             raise e
         self._options = options
+
+    @property
+    def args(self):
+        self._last_args = lists.make_sure_is_iterable(
+            self._markup(self._args)
+        )
+        return self._last_args
+
+    @property
+    def last_args(self):
+        return self._last_args
+
+    @args.setter
+    def args(self, args):
+        try:
+            self._test_markup(args)
+        except Exception as e:
+            raise e
+        self._args = args
 
     @property
     def message_type(self):

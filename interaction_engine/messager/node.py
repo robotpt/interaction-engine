@@ -12,6 +12,7 @@ class Node:
             content=None,
             options=None,
             message_type=None,
+            args=None,
             result_convert_from_str_fn=str,
             result_db_key=None,
             is_append_result=False,
@@ -29,6 +30,7 @@ class Node:
                 content=content,
                 options=options,
                 message_type=message_type,
+                args=args,
                 result_convert_from_str_fn=result_convert_from_str_fn,
                 result_db_key=result_db_key,
                 is_append_result=is_append_result,
@@ -38,8 +40,11 @@ class Node:
                 error_options=error_options,
                 text_populator=text_populator,
             )
-        elif options is not None:
-            message.options = options
+        else:
+            if options is not None:
+                message.options = options
+            if args is not None:
+                message.args = args
         self._message = message
 
         transitions = lists.make_sure_is_iterable(transitions)

@@ -81,3 +81,34 @@ class TestMessage(unittest.TestCase):
             for o in options:
                 self.assertTrue(o in true_greetings)
 
+    def test_add_args(self):
+        arg = 'Woah'
+        message = Message(
+            content='Hi',
+            options=['Hello'],
+            message_type=Message.Type.MULTIPLE_CHOICE,
+            args=arg,
+            text_populator=self._text_populator
+        )
+        assert [arg] == message.args
+
+        args = ['Woah', 'Der']
+        message = Message(
+            content='Hi',
+            options=['Hello'],
+            message_type=Message.Type.MULTIPLE_CHOICE,
+            args=args,
+            text_populator=self._text_populator
+        )
+        assert args == message.args
+
+        greetings = ['Hi', 'Hello', 'Hola', "{'var': 'greeting'}"]
+        message = Message(
+            content='Hi',
+            options=['Hello'],
+            message_type=Message.Type.MULTIPLE_CHOICE,
+            args='{greeting}',
+            text_populator=self._text_populator
+        )
+        for _ in range(10):
+            self.assertTrue(message.args[0] in greetings)
