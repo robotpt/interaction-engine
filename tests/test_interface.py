@@ -1,4 +1,4 @@
-from interaction_engine.interfaces.interface import Interface
+from interaction_engine.interfaces.client_and_server_interface import ClientAndServerInterface
 from interaction_engine.messager import Message
 from pickled_database import PickledDatabase
 from robotpt_common_utils import lists
@@ -20,8 +20,8 @@ class TestInterface(unittest.TestCase):
 
         self._db = db
         self._io = TestIO()
-        self._interface = Interface(
-            *[self._io.output_fn, self._io.input_fn]*3,
+        self._interface = ClientAndServerInterface(
+            *[self._io.output_fn, self._io.input_fn]*2,
             pickled_database=self._db
         )
 

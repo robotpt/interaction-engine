@@ -1,11 +1,11 @@
-from interaction_engine.interfaces.interface import Interface
+from interaction_engine.interfaces.client_and_server_interface import ClientAndServerInterface
 from interaction_engine.messager.message import Message
 from robotpt_common_utils import math_tools, lists
 from pickled_database import PickledDatabase
 import textwrap
 
 
-class TerminalInterface(Interface):
+class TerminalClientAndServerInterface(ClientAndServerInterface):
 
     def __init__(
             self,
@@ -77,18 +77,18 @@ if __name__ == '__main__':
     multiple_choice_message1 = Message(
         content='How are you?',
         options=['Good', 'Okay', 'Bad'],
-        message_type='multiple choice',
+        message_type=Message.Type.MULTIPLE_CHOICE,
     )
     multiple_choice_message2 = Message(
         content='Do you love me?',
         options='Yes!',
-        message_type='multiple choice',
+        message_type=Message.Type.MULTIPLE_CHOICE,
         is_confirm=True,
     )
     real_number_entry_message = Message(
         content='How old are you?',
         options='years_old',
-        message_type='direct input',
+        message_type=Message.Type.DIRECT_INPUT,
         result_convert_from_str_fn=float,
         result_db_key='user_age',
         tests=[
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     string_entry_message = Message(
         content="What's your name?",
         options='Okay',
-        message_type='direct input',
+        message_type=Message.Type.DIRECT_INPUT,
         result_convert_from_str_fn=str,
         result_db_key='user_name',
         tests=lambda x: len(x) > 1,
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     atexit.register(lambda: os.remove(db_file))
 
     db = PickledDatabase(db_file)
-    interface = TerminalInterface(pickled_database=db)
+    interface = TerminalClientAndServerInterface(pickled_database=db)
     for msg in [
         multiple_choice_message1,
         multiple_choice_message2,

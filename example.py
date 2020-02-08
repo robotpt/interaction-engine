@@ -6,7 +6,7 @@ from interaction_engine import InteractionEngine
 from interaction_engine.messager import Message, Node, DirectedGraph
 from interaction_engine.planner import MessagerPlanner
 from interaction_engine.text_populator import TextPopulator, DatabasePopulator, VarietyPopulator
-from interaction_engine.interfaces import TerminalInterface
+from interaction_engine.interfaces import TerminalClientAndServerInterface
 
 
 """
@@ -88,7 +88,7 @@ basic_questions = DirectedGraph(
             name='ask age',
             content="Alright, {'db': 'user_name'}, how old are you?",
             options='years_old',
-            message_type='direct input',
+            message_type=Message.Type.DIRECT_INPUT,
             result_convert_from_str_fn=float,
             result_db_key='user_age',
             tests=[
@@ -156,7 +156,7 @@ closing = DirectedGraph(
 ORGANIZE CONTENT TO BE PLAYED
 """
 
-interface_ = TerminalInterface(pickled_database=db)
+interface_ = TerminalClientAndServerInterface(pickled_database=db)
 graphs_ = [greeting, basic_questions, psych_question, closing]
 
 # Create a plan

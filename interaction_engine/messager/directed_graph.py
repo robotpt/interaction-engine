@@ -186,10 +186,10 @@ fakebar,fake-bar
         start_node='ask name'
     )
 
-    from interaction_engine.interfaces.terminal_interface import TerminalInterface
+    from interaction_engine.interfaces.terminal_client_and_server_interface import TerminalClientAndServerInterface
     from pickled_database import PickledDatabase
 
-    interface = TerminalInterface(pickled_database=db)
+    interface = TerminalClientAndServerInterface(pickled_database=db)
     while directed_graph.is_active:
         msg = directed_graph.get_message()
         user_response = interface.run(msg)

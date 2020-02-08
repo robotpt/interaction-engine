@@ -7,31 +7,15 @@ class Interface:
 
     def __init__(
             self,
-            multiple_choice_output_fn,
-            multiple_choice_input_fn,
-            direct_input_output_fn,
-            direct_input_input_fn,
-            error_output_fn=None,
-            error_input_fn=None,
+            input_fn,
+            output_fn=None,
             pickled_database=None,
             is_create_db_key_if_not_exist=False,
     ):
-        self._output_input_fns = {
-            Message.Type.MULTIPLE_CHOICE: (
-                multiple_choice_output_fn, multiple_choice_input_fn
-            ),
-            Message.Type.DIRECT_INPUT: (
-                direct_input_output_fn, direct_input_input_fn
-            )
-        }
-
-        if error_output_fn is None:
-            error_output_fn = multiple_choice_output_fn
-        self._error_output_fn = error_output_fn
-
-        if error_input_fn is None:
-            error_input_fn = multiple_choice_input_fn
-        self._error_input_fn = error_input_fn
+        self._input_fn = input_fn
+        if output_fn is None:
+            output_fn = lambda _: _
+        self._output_fn = output_fn
 
         if (
                 pickled_database is not None
@@ -46,13 +30,11 @@ class Interface:
         if type(message) is not Message:
             raise ValueError("Must input message class")
 
-        if message.message_type in self._output_input_fns:
-            output_fn, input_fn = self._output_input_fns[message.message_type]
-        else:
-            raise KeyError(f"Message type '{message.message_type}' not found")
-
-        output_fn(message)
-        result_str = input_fn(message)
+        try:
+            self._output_fn(message)
+            result_str = self._input_fn(message)
+        except Exception as e:
+            raise Exception("Error with output and input functions") from e
 
         # Rerun if user put in bad entry
         try:
