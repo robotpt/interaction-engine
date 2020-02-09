@@ -140,6 +140,7 @@ class Message(BaseMessenger):
 
     @args.setter
     def args(self, args):
+        args = lists.make_sure_is_iterable(args)
         try:
             for arg in args:
                 self._test_markup(arg)
