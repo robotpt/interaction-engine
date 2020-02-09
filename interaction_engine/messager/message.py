@@ -6,8 +6,8 @@ from interaction_engine.messager.base_messenger import BaseMessenger
 class Message(BaseMessenger):
 
     class Type:
-        MULTIPLE_CHOICE = "multiple_choice"
-        DIRECT_INPUT = "text"
+        MULTIPLE_CHOICE = "multiple choice"
+        DIRECT_INPUT = "text entry"
 
     def __init__(
             self,
