@@ -8,6 +8,8 @@ class Message(BaseMessenger):
     class Type:
         MULTIPLE_CHOICE = "multiple choice"
         DIRECT_INPUT = "text entry"
+        TIME_ENTRY = "time entry"
+        SLIDER = "slider"
 
     def __init__(
             self,
@@ -39,6 +41,7 @@ class Message(BaseMessenger):
         self.options = options
 
         self._args = []
+        self._last_args = None
         if args is not None:
             self.args = args
 
@@ -127,9 +130,8 @@ class Message(BaseMessenger):
 
     @property
     def args(self):
-        self._last_args = lists.make_sure_is_iterable(
-            self._markup(self._args)
-        )
+        args = lists.make_sure_is_iterable(self._args)
+        self._last_args = [self._markup(arg) for arg in args]
         return self._last_args
 
     @property
@@ -139,9 +141,10 @@ class Message(BaseMessenger):
     @args.setter
     def args(self, args):
         try:
-            self._test_markup(args)
+            for arg in args:
+                self._test_markup(arg)
         except Exception as e:
-            raise e
+            raise Exception from e
         self._args = args
 
     @property
