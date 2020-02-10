@@ -1,3 +1,5 @@
+import time
+
 from interaction_engine.messager.base_messenger import BaseMessenger
 from interaction_engine.interfaces.interface import Interface
 from interaction_engine.planner.messanger_planner import MessagerPlanner
@@ -42,4 +44,5 @@ class InteractionEngine:
             msg = messager.get_message()
             user_response = self._interface.run(msg)
             messager.transition(user_response)
+            time.sleep(0.25)  # delay for stability
         post_hook()
