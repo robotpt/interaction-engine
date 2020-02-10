@@ -33,6 +33,8 @@ class Interface:
         try:
             self._output_fn(message)
             result_str = self._input_fn(message)
+        except TimeoutError as e:
+            raise TimeoutError("Output or input functions timed out") from e
         except Exception as e:
             raise Exception("Error with output and input functions") from e
 
