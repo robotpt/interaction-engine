@@ -44,5 +44,4 @@ class InteractionEngine:
             msg = messager.get_message()
             user_response = self._interface.run(msg)
             messager.transition(user_response)
-            time.sleep(0.25)  # delay for stability
         post_hook()
