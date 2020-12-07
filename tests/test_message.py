@@ -4,9 +4,9 @@ import random
 
 from interaction_engine.messager import Message
 from interaction_engine.text_populator import TextPopulator, VarietyPopulator, DatabasePopulator
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 
-db_file = 'test_db.pkl'
+db_file = 'test_db.json'
 
 variation_file = 'variation.csv'
 variation_file_contents = """
@@ -32,10 +32,10 @@ class TestMessage(unittest.TestCase):
 
     def setUp(self) -> None:
 
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(variation_file, 'w', newline='') as csvfile:
             csvfile.write(variation_file_contents.strip())

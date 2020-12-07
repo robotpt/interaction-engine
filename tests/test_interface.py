@@ -1,28 +1,28 @@
 from interaction_engine.interfaces.client_and_server_interface import ClientAndServerInterface
 from interaction_engine.messager import Message
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 from robotpt_common_utils import lists
 
 import unittest
 import os
 
-db_file = 'test_db.pkl'
+db_file = 'test_db.json'
 
 
 class TestInterface(unittest.TestCase):
 
     def setUp(self) -> None:
 
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         self._db = db
         self._io = TestIO()
         self._interface = ClientAndServerInterface(
             *[self._io.output_fn, self._io.input_fn]*2,
-            pickled_database=self._db
+            database=self._db
         )
 
     def tearDown(self) -> None:
@@ -169,7 +169,7 @@ class TestInterface(unittest.TestCase):
         )
         self.assertEqual(
             choice,
-            self._db.get(db_key)
+            self._db[db_key]
         )
 
     def test_append_db_entry(self):
@@ -205,7 +205,7 @@ class TestInterface(unittest.TestCase):
         )
 
         truth_out = choices
-        out = self._db.get(db_key)
+        out = self._db.create_key(db_key)
         for i in range(len(truth_out)):
             self.assertEqual(
                 truth_out[i],
@@ -238,7 +238,7 @@ class TestInterface(unittest.TestCase):
         )
         self.assertEqual(
             choice,
-            self._db.get(db_key)
+            self._db[db_key]
         )
 
 class TestIO:

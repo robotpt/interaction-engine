@@ -9,7 +9,7 @@ class TerminalClientAndServerInterface(ClientAndServerInterface):
 
     def __init__(
             self,
-            pickled_database=None,
+            database=None,
             is_create_db_key_if_not_exist=True,
     ):
         fns = [
@@ -20,7 +20,7 @@ class TerminalClientAndServerInterface(ClientAndServerInterface):
         ]
         super().__init__(
             *fns,
-            pickled_database=pickled_database,
+            database=database,
             is_create_db_key_if_not_exist=is_create_db_key_if_not_exist
         )
 
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     atexit.register(lambda: os.remove(db_file))
 
     db = PickledDatabase(db_file)
-    interface = TerminalClientAndServerInterface(pickled_database=db)
+    interface = TerminalClientAndServerInterface(database=db)
     for msg in [
         multiple_choice_message1,
         multiple_choice_message2,

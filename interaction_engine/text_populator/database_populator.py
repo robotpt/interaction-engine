@@ -1,7 +1,8 @@
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 from interaction_engine.text_populator.base_populator import BasePopulator
 
 import datetime
+
 
 class DatabasePopulator(BasePopulator):
 
@@ -25,7 +26,7 @@ class DatabasePopulator(BasePopulator):
         )
 
         if type(database) is str:
-            self._db = PickledDatabase(database)
+            self._db = Database(database)
         else:
             self._db = database
 
@@ -41,7 +42,7 @@ class DatabasePopulator(BasePopulator):
             modify_before_resaving_fn=None,
     ):
         if self._db.is_set(key):
-            value = self._db.get(key)
+            value = self._db[key]
         elif default_value is not None:
             value = default_value
         else:
@@ -51,7 +52,7 @@ class DatabasePopulator(BasePopulator):
             if modify_before_resaving_fn in DatabasePopulator._common_fns:
                 modify_before_resaving_fn = DatabasePopulator._common_fns[modify_before_resaving_fn]
             new_value = modify_before_resaving_fn(value)
-            self._db.set(key, new_value)
+            self._db[key] = new_value
 
         if type(value) is datetime.time:
             value = value.strftime("%-I:%M%p")

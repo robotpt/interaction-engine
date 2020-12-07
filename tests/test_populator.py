@@ -1,11 +1,12 @@
+import json
 import unittest
 import os
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 from interaction_engine.text_populator import TextPopulator
 from interaction_engine.text_populator.database_populator import DatabasePopulator
 from interaction_engine.text_populator.variety_populator import VarietyPopulator
 
-db_file = 'test_db.pkl'
+db_file = 'test_db.json'
 
 variation_file = 'variation.csv'
 variation_file_contents = """
@@ -32,10 +33,10 @@ class TestTextPopulator(unittest.TestCase):
 
     def setUp(self) -> None:
 
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(variation_file, 'w', newline='') as csvfile:
             csvfile.write(variation_file_contents.strip())
@@ -218,12 +219,12 @@ class TestTextPopulator(unittest.TestCase):
                 self._text_populator.is_valid(test_str)
             self.assertEqual(
                 i,
-                self._db.get('question_idx')
+                self._db["question_idx"]
             )
             self._text_populator.run(test_str)
             self.assertEqual(
                 i+1,
-                self._db.get('question_idx')
+                self._db["question_idx"]
             )
 
         test_str = "{'var': '{'var': 'foo'}bar'}"
@@ -258,10 +259,10 @@ class TestTextPopulator(unittest.TestCase):
         greeting,Hi
         greeting,Hello{'var': 'foo'}
         """
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(bad_variation_file, 'w', newline='') as csvfile:
             csvfile.write(bad_variation_file_contents.strip())
@@ -284,10 +285,10 @@ class TestTextPopulator(unittest.TestCase):
         greeting,Hi
         greeting,Hello{
         """
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(bad_variation_file, 'w', newline='') as csvfile:
             csvfile.write(bad_variation_file_contents.strip())
@@ -310,10 +311,10 @@ class TestTextPopulator(unittest.TestCase):
         greeting,Hi ready for number {'db': 'question_idx', 'post-op': 'increment'}
         greeting,Hello {'db': 'user_name'}
         """
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(bad_variation_file, 'w', newline='') as csvfile:
             csvfile.write(bad_variation_file_contents.strip())
@@ -334,10 +335,10 @@ class TestTextPopulator(unittest.TestCase):
         greeting,"Hi ready for number {'db': 'question_idx', 'post-op': 'increment'}"
         greeting,Hello {'db': 'user_name'}
         """
-        db = PickledDatabase(db_file)
-        db.create_key_if_not_exists('user_name')
-        db.create_key_if_not_exists('question_idx', 0)
-        db.create_key_if_not_exists('answers')
+        db = Database(db_file)
+        db["user_name"] = None
+        db["question_idx"] = 0
+        db["answers"] = None
 
         with open(correct_variation_file, 'w', newline='') as csvfile:
             csvfile.write(correct_variation_file_contents.strip())
@@ -358,7 +359,7 @@ class TestTextPopulator(unittest.TestCase):
         greeting,Hi
         greeting,Hello {'db': 'not_a_key'}
         """
-        db = PickledDatabase(db_file)
+        db = Database(db_file)
 
         with open(bad_variation_file, 'w', newline='') as csvfile:
             csvfile.write(bad_variation_file_contents.strip())
