@@ -49,7 +49,7 @@ CREATE CONTENT
 """
 
 variety_populator_ = VarietyPopulator(variation_file)
-database_populator_ = DatabasePopulator(db)
+database_populator_ = DatabasePopulator(db_file)
 text_populator = TextPopulator(variety_populator_, database_populator_)
 
 greeting = DirectedGraph(
