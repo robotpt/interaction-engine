@@ -1,6 +1,6 @@
 from interaction_engine.messager.message import Message
 from robotpt_common_utils import lists, user_input
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 
 
 class Interface:
@@ -9,7 +9,7 @@ class Interface:
             self,
             input_fn,
             output_fn=None,
-            pickled_database=None,
+            database=None,
             is_create_db_key_if_not_exist=False,
     ):
         self._input_fn = input_fn
@@ -18,11 +18,11 @@ class Interface:
         self._output_fn = output_fn
 
         if (
-                pickled_database is not None
-                and not issubclass(pickled_database.__class__, PickledDatabase)
+                database is not None
+                and not type(database) is Database
         ):
             raise TypeError
-        self._db = pickled_database
+        self._db = database
         self._is_create_db_key_if_not_exist = is_create_db_key_if_not_exist
 
     def run(self, message):
@@ -64,18 +64,19 @@ class Interface:
         ):
             if key not in self._db:
                 if self._is_create_db_key_if_not_exist:
-                    self._db.create_key(key)
+                    self._db[key] = None
                 else:
                     raise KeyError(f"'{key}' doesn't exist in the database")
 
             if message.is_append_result:
                 save_result = [result]
                 if self._db.is_set(key):
-                    save_result = self._db.get(key) + save_result
+
+                    save_result = self._db[key] + save_result
             else:
                 save_result = result
 
-            self._db.set(message.result_db_key, save_result)
+            self._db[message.result_db_key] = save_result
 
         return result
 

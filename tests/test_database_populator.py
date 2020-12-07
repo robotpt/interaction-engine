@@ -2,17 +2,18 @@ import unittest
 import os
 
 from interaction_engine.text_populator.database_populator import DatabasePopulator
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 
 
 class TestDatabasePopulator(unittest.TestCase):
 
     def setUp(self):
-        self.file = 'test_db.pkl'
-        db = PickledDatabase(self.file)
-        db.create_key('key1', 1)
-        db.create_key('key2', 'two')
-        db.create_key('no_value_key')
+        self.file = 'test_db.json'
+        db = Database(self.file)
+        db['key1'] = '1'
+        db['key2'] = 'two'
+        db['no_value_key'] = None
+        db['key3'] = 0
         self.dp = DatabasePopulator(db)
 
     def tearDown(self):
@@ -47,3 +48,17 @@ class TestDatabasePopulator(unittest.TestCase):
             'not_a_key'
         )
 
+    def test_post_op(self):
+        for i in range(10):
+            self.assertEqual(
+                i,
+                self.dp._db['key3']
+            )
+            self.dp.get_replacement('key3', modify_before_resaving_fn='increment')
+
+        for i in range(10):
+            self.assertEqual(
+                10-i,
+                self.dp._db['key3']
+            )
+            self.dp.get_replacement('key3', modify_before_resaving_fn='decrement')

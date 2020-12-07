@@ -185,17 +185,17 @@ class Message(BaseMessenger):
 if __name__ == "__main__":
 
     import os
-    from pickled_database import PickledDatabase
+    from interaction_engine.json_database import Database
     from interaction_engine.text_populator import DatabasePopulator
     from interaction_engine.text_populator.variety_populator import VarietyPopulator
 
-    db_file = 'test_db.pkl'
-    db = PickledDatabase(db_file)
-    db.create_key_if_not_exists('key1', 1)
-    db.create_key_if_not_exists('key2', 'two')
-    db.create_key_if_not_exists('no_value_key')
-    db.create_key_if_not_exists('user_name', 'Audrow')
-    db.create_key_if_not_exists('question_idx', 1)
+    db_file = 'test_db.json'
+    db = Database(db_file)
+    db['key1'] = 1
+    db['key2'] = 'two'
+    db['no_value_key'] = None
+    db['user_name'] = 'Audrow'
+    db['question_idx'] = 1
 
     my_str = """
 {'var': 'greeting'}, {'db': 'user_name'}. 

@@ -22,7 +22,6 @@ VERSION = '0.0.6'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'pickle_database',
     'robotpt_common_utils',
     # 'requests', 'maya', 'records',
 ]

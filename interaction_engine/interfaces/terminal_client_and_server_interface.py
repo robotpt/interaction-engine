@@ -1,7 +1,7 @@
 from interaction_engine.interfaces.client_and_server_interface import ClientAndServerInterface
 from interaction_engine.messager.message import Message
+from interaction_engine.json_database import Database
 from robotpt_common_utils import math_tools, lists
-from pickled_database import PickledDatabase
 import textwrap
 
 
@@ -9,7 +9,7 @@ class TerminalClientAndServerInterface(ClientAndServerInterface):
 
     def __init__(
             self,
-            pickled_database=None,
+            database=None,
             is_create_db_key_if_not_exist=True,
     ):
         fns = [
@@ -20,7 +20,7 @@ class TerminalClientAndServerInterface(ClientAndServerInterface):
         ]
         super().__init__(
             *fns,
-            pickled_database=pickled_database,
+            database=database,
             is_create_db_key_if_not_exist=is_create_db_key_if_not_exist
         )
 
@@ -111,11 +111,11 @@ if __name__ == '__main__':
     import os
     import atexit
 
-    db_file = "memory.pkl"
+    db_file = "memory.json"
     atexit.register(lambda: os.remove(db_file))
 
-    db = PickledDatabase(db_file)
-    interface = TerminalClientAndServerInterface(pickled_database=db)
+    db = Database(db_file)
+    interface = TerminalClientAndServerInterface(database=db)
     for msg in [
         multiple_choice_message1,
         multiple_choice_message2,

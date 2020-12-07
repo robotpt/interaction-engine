@@ -1,6 +1,6 @@
 from interaction_engine.messager.message import Message
 from interaction_engine.interfaces.interface import Interface
-from pickled_database import PickledDatabase
+from interaction_engine.json_database import Database
 
 
 class ClientAndServerInterface(Interface):
@@ -11,7 +11,7 @@ class ClientAndServerInterface(Interface):
             multiple_choice_input_fn,
             direct_input_output_fn,
             direct_input_input_fn,
-            pickled_database=None,
+            database=None,
             is_create_db_key_if_not_exist=False,
     ):
         super().__init__(
@@ -27,16 +27,16 @@ class ClientAndServerInterface(Interface):
                     Message.Type.DIRECT_INPUT: direct_input_output_fn,
                 }
             ),
-            pickled_database=pickled_database,
+            database=database,
             is_create_db_key_if_not_exist=is_create_db_key_if_not_exist
         )
 
         if (
-                pickled_database is not None
-                and not issubclass(pickled_database.__class__, PickledDatabase)
+                database is not None
+                and not type(database) == Database
         ):
             raise TypeError
-        self._db = pickled_database
+        self._db = database
         self._is_create_db_key_if_not_exist = is_create_db_key_if_not_exist
 
     @staticmethod
