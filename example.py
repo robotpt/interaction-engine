@@ -1,8 +1,7 @@
 import os
 
-from pickled_database import PickledDatabase
-
 from interaction_engine import InteractionEngine
+from interaction_engine.json_database import Database
 from interaction_engine.messager import Message, Node, DirectedGraph
 from interaction_engine.planner import MessagerPlanner
 from interaction_engine.text_populator import TextPopulator, DatabasePopulator, VarietyPopulator
@@ -16,11 +15,11 @@ CREATE RESOURCES USED TO POPULATE TEXT
 import atexit
 
 # Create the database
-db_file = 'test_db.pkl'
-db = PickledDatabase(db_file)
-db.create_key_if_not_exists('user_name')
-db.create_key_if_not_exists('question_idx', 0)
-db.create_key_if_not_exists('answers')
+db_file = 'test_db.json'
+db = Database(db_file)
+db["user_name"] = None
+db["question_idx"] = 0
+db["answers"] = None
 
 # Create a file with text used for variation
 variation_file = 'variation.csv'
@@ -50,7 +49,7 @@ CREATE CONTENT
 """
 
 variety_populator_ = VarietyPopulator(variation_file)
-database_populator_ = DatabasePopulator(db_file)
+database_populator_ = DatabasePopulator(db)
 text_populator = TextPopulator(variety_populator_, database_populator_)
 
 greeting = DirectedGraph(
@@ -156,7 +155,7 @@ closing = DirectedGraph(
 ORGANIZE CONTENT TO BE PLAYED
 """
 
-interface_ = TerminalClientAndServerInterface(pickled_database=db)
+interface_ = TerminalClientAndServerInterface(database=db)
 graphs_ = [greeting, basic_questions, psych_question, closing]
 
 # Create a plan
