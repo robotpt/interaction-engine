@@ -187,7 +187,6 @@ fakebar,fake-bar
     )
 
     from interaction_engine.interfaces.terminal_client_and_server_interface import TerminalClientAndServerInterface
-    from pickled_database import PickledDatabase
 
     interface = TerminalClientAndServerInterface(database=db)
     while directed_graph.is_active:
