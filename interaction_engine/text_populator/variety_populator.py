@@ -84,17 +84,27 @@ class VarietyPopulator(BasePopulator):
             dict2 = {}
         for key2 in dict2:
             if key2 in dict1:
-                list1 = lists.make_sure_is_iterable(dict1[key2])
-                list2 = lists.make_sure_is_iterable(dict2[key2])
+                list1 = VarietyPopulator._remove_duplicates_from_list(
+                    lists.make_sure_is_iterable(dict1[key2])
+                )
+                list2 = VarietyPopulator._remove_duplicates_from_list(
+                    lists.make_sure_is_iterable(dict2[key2])
+                )
                 dict1[key2] = VarietyPopulator._combine_lists(list1, list2)
             else:
-                dict1[key2] = lists.make_sure_is_iterable(dict2[key2])
+                dict1[key2] = VarietyPopulator._remove_duplicates_from_list(
+                    lists.make_sure_is_iterable(dict2[key2])
+                )
         return dict1
 
     @staticmethod
     def _combine_lists(list1, list2):
         set_from_list = set().union(list1, list2)
         return list(set_from_list)
+
+    @staticmethod
+    def _remove_duplicates_from_list(li):
+        return list(set(li))
 
 
 if __name__ == '__main__':
