@@ -1,3 +1,4 @@
+import json
 import unittest
 import os
 import random
@@ -8,25 +9,23 @@ from interaction_engine.json_database import Database
 
 db_file = 'test_db.json'
 
-variation_file = 'variation.csv'
-variation_file_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-question,I am the life of the party
-question,I am always prepared
-question,I get stressed out easily
-question,I have a rich vocabulary
-only one,just one
-replace1,{'var': 'replace2'}
-replace2,{'var': 'replace3'}
-replace3,Works!
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-"""
+variation_file = 'variation.json'
+variation_file_contents = {
+    "greeting": ["Hi", "Hello", "Hola"],
+    "question": [
+        "I am the life of the party",
+        "I am always prepared",
+        "I get stressed out easily",
+        "I have a rich vocabulary"
+    ],
+    "only one": "just one",
+    "replace1": {'var': 'replace2'},
+    "replace2": {'var': 'replace3'},
+    "foo": ["foo", "fake"],
+    "foobar": "foo-bar",
+    "fakebar": "fake-bar"
+}
+
 
 class TestMessage(unittest.TestCase):
 
@@ -37,8 +36,8 @@ class TestMessage(unittest.TestCase):
         db["question_idx"] = 0
         db["answers"] = None
 
-        with open(variation_file, 'w', newline='') as csvfile:
-            csvfile.write(variation_file_contents.strip())
+        with open(variation_file, 'w', newline='') as f:
+            json.dump(variation_file_contents, f)
 
         variety_populator_ = VarietyPopulator(variation_file)
         database_populator_ = DatabasePopulator(db_file)

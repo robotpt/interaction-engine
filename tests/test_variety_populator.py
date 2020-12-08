@@ -1,53 +1,42 @@
+import json
 import unittest
 import os
 
 from interaction_engine.text_populator.variety_populator import VarietyPopulator
 
-file1_path = 'file1.csv'
-file1_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-greeting-morning,Good morning
-question,Do you like green?
-question,Do you like dogs?
-question,Do you like apples?
-question,Do you like me?
-special_question,What is a special_question?
-one-part-two,Foo
-three-part-four,Foo
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-"""
+file1_path = 'file1.json'
+file1_contents = {
+    "greeting": ["Hi", "Hello", "Hola"],
+    "greeting-morning": "Good morning",
+    "question": [
+        "Do you like green?",
+        "Do you like dogs?",
+        "Do you like apples?",
+        "Do you like me?"
+    ],
+    "special_question": "What is a special_question?",
+    "one-part-two": "Foo",
+    "three-part-four": "Foo",
+    "foo": ["foo", "fake"],
+    "foobar": "foo-bar",
+    "fakebar": "fake-bar"
+}
 
-file2_path = 'file2.csv'
-file2_contents = """
-Code,Text
-greeting,Bonjour
-greeting,Hei
-new,bar
-"""
-
-duplicate_entry_path = 'duplicate_entry.csv'
-duplicate_entry_contents = """
-Code,Text
-foo,foo
-foo,foo
-"""
+file2_path = 'file2.json'
+file2_contents = {
+    "greeting": ["Bonjour", "Hei"],
+    "new": "bar"
+}
 
 files = (
     (file1_path, file1_contents),
     (file2_path, file2_contents),
-    (duplicate_entry_path, duplicate_entry_contents),
 )
 
 
 def write_file(path, contents):
-    with open(path, 'w', newline='') as csvfile:
-        csvfile.write(contents.strip())
+    with open(path, 'w', newline='') as f:
+        json.dump(contents, f)
 
 
 def delete_file(path):
@@ -116,8 +105,6 @@ class TestVarietyPopulator(unittest.TestCase):
     def test_create_dict_from_file(self):
         variation_dict = VarietyPopulator._create_dict(file1_path)
 
-        self.assertTrue('Code' not in variation_dict)
-        self.assertTrue('Text' not in variation_dict)
         for k in ['greeting', 'question', 'foo', 'foobar', 'fakebar']:
             self.assertTrue(k in variation_dict)
         self.assertEqual(
@@ -151,13 +138,6 @@ class TestVarietyPopulator(unittest.TestCase):
                 5,
                 len(vd['greeting'])
             )
-
-    def test_duplicate_items(self):
-        self.assertRaises(
-            ValueError,
-            VarietyPopulator._create_dict,
-            duplicate_entry_path
-        )
 
     def test_wildcard_symbol(self):
 

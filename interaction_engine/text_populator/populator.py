@@ -203,10 +203,11 @@ class TextPopulator:
 
 if __name__ == "__main__":
 
+    import json
     import os
     from pickled_database import PickledDatabase
 
-    db_file = 'test_db.pkl'
+    db_file = 'test_db.json'
     db = PickledDatabase(db_file)
     db.create_key_if_not_exists('key1', 1)
     db.create_key_if_not_exists('key2', 'two')
@@ -221,24 +222,22 @@ if __name__ == "__main__":
 {'var': '{'var': 'foo'}bar'}
     """
 
-    variation_file = 'variation.csv'
-    variation_file_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-question,Do you like green?
-question,Do you like dogs?
-question,Do you like apples?
-question,Do you like me?
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-    """
+    variation_file = 'variation.json'
+    variation_dict = {
+        "greeting": ["Hi", "Hello", "Hola"],
+        "question": [
+            "Do you like green?",
+            "Do you like dogs?",
+            "Do you like apples?",
+            "Do you like me?"
+        ],
+        "foo": ["foo", "fake"],
+        "foobar": "foo-bar",
+        "fakebar": "fake-bar"
+    }
 
-    with open(variation_file, 'w', newline='') as csvfile:
-        csvfile.write(variation_file_contents.strip())
+    with open(variation_file, 'w', newline='') as f:
+        json.dump(variation_dict, f)
 
     import atexit
     atexit.register(lambda: os.remove(db_file))

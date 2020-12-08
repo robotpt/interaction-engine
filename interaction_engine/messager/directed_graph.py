@@ -93,6 +93,7 @@ class DirectedGraph(BaseMessenger):
 
 if __name__ == '__main__':
 
+    import json
     import os
     from interaction_engine.json_database import Database
     from interaction_engine.text_populator import TextPopulator
@@ -107,24 +108,22 @@ if __name__ == '__main__':
     db['user_name'] = 'Audrow'
     db['question_idx'] = 1
 
-    variation_file = 'variation.csv'
-    variation_file_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-question,Do you like green?
-question,Do you like dogs?
-question,Do you like apples?
-question,Do you like me?
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-        """
+    variation_file = 'variation.json'
+    variation_dict = {
+        "greeting": ["Hi", "Hello", "Hola"],
+        "question": [
+            "Do you like green?",
+            "Do you like dogs?",
+            "Do you like apples?",
+            "Do you like me?"
+        ],
+        "foo": ["foo", "fake"],
+        "foobar": "foo-bar",
+        "fakebar": "fake-bar"
+    }
 
-    with open(variation_file, 'w', newline='') as csvfile:
-        csvfile.write(variation_file_contents.strip())
+    with open(variation_file, 'w', newline='') as f:
+        json.dump(variation_dict, f)
 
     import atexit
     atexit.register(lambda: os.remove(db_file))
@@ -138,7 +137,7 @@ fakebar,fake-bar
         name='ask name',
         content="What's your name?",
         options='Okay',
-        message_type='direct input',
+        message_type='text entry',
         result_db_key='user_name',
         result_convert_from_str_fn=str,
         tests=lambda x: len(x) > 1,
@@ -151,7 +150,7 @@ fakebar,fake-bar
         name='ask age',
         content="Alright, {'db': 'user_name'}, how old are you?",
         options='years_old',
-        message_type='direct input',
+        message_type='text entry',
         result_convert_from_str_fn=float,
         result_db_key='user_age',
         tests=[
