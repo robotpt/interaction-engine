@@ -1,4 +1,4 @@
-import csv
+import json
 import random
 
 from robotpt_common_utils import lists, math_tools, strings
@@ -15,8 +15,6 @@ class VarietyPopulator(BasePopulator):
     def __init__(
             self,
             files,
-            code_key_in_file='Code',
-            text_key_in_file='Text',
             wild_card_symbol='*',
     ):
         super().__init__(
@@ -27,11 +25,7 @@ class VarietyPopulator(BasePopulator):
             ]
         )
 
-        self._variations = VarietyPopulator._create_dict(
-            files,
-            code_key_in_file=code_key_in_file,
-            text_key_in_file=text_key_in_file,
-        )
+        self._variations = VarietyPopulator._create_dict(files)
         self._wild_card_symbol = wild_card_symbol
 
     def get_replacement(
@@ -72,70 +66,62 @@ class VarietyPopulator(BasePopulator):
 
     @staticmethod
     def _create_dict(
-            files,
-            variations_dict=None,
-            code_key_in_file='Code',
-            text_key_in_file='Text',
+        files,
+        variations_dict=None,
     ):
         files = lists.make_sure_is_iterable(files)
         for f in files:
-            variations_dict = VarietyPopulator._create_dict_from_one_file(
-                    f,
-                    variations_dict=variations_dict,
-                    code_key_in_file=code_key_in_file,
-                    text_key_in_file=text_key_in_file,
-            )
-
+            with open(f) as variation_file:
+                new_dict = json.load(variation_file)
+                variations_dict = VarietyPopulator._combine_dicts(variations_dict, new_dict)
         return variations_dict
 
     @staticmethod
-    def _create_dict_from_one_file(
-            file,
-            variations_dict=None,
-            code_key_in_file='Code',
-            text_key_in_file='Text',
-    ):
+    def _combine_dicts(dict1, dict2):
+        if dict1 is None:
+            dict1 = {}
+        if dict2 is None:
+            dict2 = {}
+        for key2 in dict2:
+            if key2 in dict1:
+                list1 = lists.make_sure_is_iterable(dict1[key2])
+                list2 = lists.make_sure_is_iterable(dict2[key2])
+                dict1[key2] = VarietyPopulator._combine_lists_without_duplicates(list1, list2)
+            else:
+                list2 = lists.make_sure_is_iterable(dict2[key2])
+                dict1[key2] = VarietyPopulator._combine_lists_without_duplicates([], list2)
+        return dict1
 
-        if variations_dict is None:
-            variations_dict = dict()
+    @staticmethod
+    def _combine_lists_without_duplicates(list1, list2):
+        list1 = VarietyPopulator._remove_duplicates_from_list(list1)
+        list2 = VarietyPopulator._remove_duplicates_from_list(list2)
+        set_from_list = set().union(list1, list2)
+        return list(set_from_list)
 
-        with open(file, newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-
-            for row in reader:
-
-                code = row[code_key_in_file]
-                text = row[text_key_in_file]
-                if code in variations_dict:
-                    if text in variations_dict[code]:
-                        raise ValueError(f"Duplicate entry '{code}': '{text}'")
-                    variations_dict[code].append(text)
-                else:
-                    variations_dict[code] = [text]
-
-        return variations_dict
+    @staticmethod
+    def _remove_duplicates_from_list(li):
+        return list(set(li))
 
 
 if __name__ == '__main__':
 
-    variation_file = 'variation.csv'
-    variation_file_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-question,Do you like green?
-question,Do you like dogs?
-question,Do you like apples?
-question,Do you like me?
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-    """
+    variation_file = 'variation.json'
+    variation_dict = {
+        "greeting": ["Hi", "Hello", "Hola"],
+        "question": [
+            "Do you like green?",
+            "Do you like dogs?",
+            "Do you like apples?",
+            "Do you like me?"
+        ],
+        "foo": ["foo", "fake"],
+        "foobar": "foo-bar",
+        "fakebar": "fake-bar"
+    }
 
-    with open(variation_file, 'w', newline='') as csvfile:
-        csvfile.write(variation_file_contents.strip())
+    with open(variation_file, 'w', newline='') as f:
+        json.dump(variation_dict, f)
 
     import os
     import atexit
