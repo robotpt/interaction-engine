@@ -1,4 +1,5 @@
 import json
+import mock
 import unittest
 import os
 
@@ -181,6 +182,35 @@ class TestVarietyPopulator(unittest.TestCase):
                 tag,
                 index=i,
             ))
+
+    def test_duplicate_items(self):
+        dict1 = """
+            {"foo": ["foo", "foo", "bar"]}
+        """
+        dict2 = """
+            {"foo": ["foo"],
+             "bar": ["foo", "bar", "foobar"],
+             "foobar": "foo-bar"
+            }
+        """
+        expected_dict = {
+            "foo": ["foo", "bar"],
+            "bar": ["foo", "bar", "foobar"],
+            "foobar": ["foo-bar"]
+        }
+        with mock.patch('builtins.open', mock.mock_open(read_data=dict1)):
+            vp_dict = VarietyPopulator._create_dict("variety.json")
+            self.assertEqual(len(expected_dict["foo"]), len(vp_dict["foo"]))
+            self.assertIn("foo", vp_dict["foo"])
+            self.assertIn("bar", vp_dict["foo"])
+
+        with mock.patch('builtins.open', mock.mock_open(read_data=dict1)) as mock_open:
+            handlers = [mock_open.return_value, mock.mock_open(read_data=dict2).return_value]
+            mock_open.side_effect = handlers
+            vp_dict = VarietyPopulator._create_dict(files=["file1.json", "file2.json"])
+            self.assertEqual(len(expected_dict), len(vp_dict))
+            for key in vp_dict:
+                self.assertEqual(len(expected_dict[key]), len(vp_dict[key]))
 
     def test_exception_on_wildcard_symbols(self):
         vp = VarietyPopulator(file1_path)
