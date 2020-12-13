@@ -100,7 +100,7 @@ class Message(BaseMessenger):
 
         text = lists.make_sure_is_iterable(text)
         result = [self._text_populator.run(t) for t in text]
-        if len(result) is 1:
+        if len(result) == 1:
             return result[0]
         else:
             return result

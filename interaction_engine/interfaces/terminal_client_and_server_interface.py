@@ -66,7 +66,7 @@ def input_multiple_choice(message):
 
 def direct_input(_):
     response = ''
-    while len(response) is 0:
+    while len(response) == 0:
         response = input(">>> ")
 
     return response
