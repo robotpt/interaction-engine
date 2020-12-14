@@ -38,4 +38,4 @@ class BasePopulator(ABC):
             else:
                 return False
 
-        return num_in_main is 1
+        return num_in_main == 1

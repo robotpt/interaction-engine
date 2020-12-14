@@ -69,7 +69,7 @@ class Node:
         return self._message
 
     def get_transition(self, user_input):
-        if len(self._transitions) is 1:
+        if len(self._transitions) == 1:
             return self._transitions[0]
         elif self._transition_fn is None:
             return self._transitions[
