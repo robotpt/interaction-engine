@@ -16,6 +16,7 @@ class Message(BaseMessenger):
             content,
             options,
             message_type,
+            name=None,
             args=None,
             result_convert_from_str_fn=str,
             result_db_key=None,
@@ -35,7 +36,14 @@ class Message(BaseMessenger):
         except Exception as e:
             raise e
         self._content = content
-        super().__init__(self._content)
+
+        if name is None:
+            self._name = self._content
+        else:
+            if type(name) is not str:
+                raise TypeError("Message name must be a string")
+            self._name = name
+        super().__init__(self._name)
 
         self._options = None
         self.options = options

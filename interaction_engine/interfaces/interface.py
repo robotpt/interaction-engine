@@ -17,11 +17,6 @@ class Interface:
             output_fn = lambda _: _
         self._output_fn = output_fn
 
-        if (
-                database is not None
-                and not type(database) is Database
-        ):
-            raise TypeError
         self._db = database
         self._is_create_db_key_if_not_exist = is_create_db_key_if_not_exist
 
