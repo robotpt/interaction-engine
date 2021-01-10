@@ -31,11 +31,6 @@ class ClientAndServerInterface(Interface):
             is_create_db_key_if_not_exist=is_create_db_key_if_not_exist
         )
 
-        if (
-                database is not None
-                and not type(database) == Database
-        ):
-            raise TypeError
         self._db = database
         self._is_create_db_key_if_not_exist = is_create_db_key_if_not_exist
 
