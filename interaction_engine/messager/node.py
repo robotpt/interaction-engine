@@ -30,6 +30,7 @@ class Node:
                 content=content,
                 options=options,
                 message_type=message_type,
+                name=name,
                 args=args,
                 result_convert_from_str_fn=result_convert_from_str_fn,
                 result_db_key=result_db_key,
