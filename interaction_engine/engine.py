@@ -28,8 +28,11 @@ class InteractionEngine:
         for m in messagers:
             self._messagers[m.name] = m
 
+        self._is_running = False
+
     def run(self):
-        while self._plan.is_active:
+        self._is_running = True
+        while self._plan.is_active and self._is_running:
             self.run_next_plan()
 
     def run_next_plan(self):
@@ -40,8 +43,11 @@ class InteractionEngine:
         messager.reset()
 
         pre_hook()
-        while messager.is_active:
+        while messager.is_active and self._is_running:
             msg = messager.get_message()
             user_response = self._interface.run(msg)
-            messager.transition(user_response)
+            try:
+                messager.transition(user_response)
+            except ValueError:
+                self._is_running = False
         post_hook()
