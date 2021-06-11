@@ -13,6 +13,7 @@ CREATE RESOURCES USED TO POPULATE TEXT
 """
 
 import atexit
+import json
 
 # Create the database
 db_file = 'test_db.json'
@@ -23,22 +24,32 @@ db["answers"] = None
 
 # Create a file with text used for variation
 variation_file = 'variation.csv'
-variation_file_contents = """
-Code,Text
-greeting,Hi
-greeting,Hello
-greeting,Hola
-question,I am the life of the party
-question,I am always prepared
-question,I get stressed out easily
-question,I have a rich vocabulary
-foo,foo
-foo,fake
-foobar,foo-bar
-fakebar,fake-bar
-"""
-with open(variation_file, 'w', newline='') as csvfile:
-    csvfile.write(variation_file_contents.strip())
+variation_file_contents = {
+    "greeting": [
+        "Hi",
+        "Hello",
+        "Hola"
+    ],
+    "question": [
+        "I am the life of the party",
+        "I am always prepared",
+        "I get stressed out easily",
+        "I have a rich vocabulary"
+    ],
+    "foo": [
+        "foo",
+        "fake"
+    ],
+    "foobar": [
+        "foo-bar"
+    ],
+    "fakebar": [
+        "fake-bar"
+    ]
+}
+
+with open(variation_file, 'w', newline='') as f:
+    json.dump(variation_file_contents, f)
 
 # Delete the created files after this program runs
 atexit.register(lambda: os.remove(db_file))
