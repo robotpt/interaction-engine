@@ -1,6 +1,7 @@
 import json
 import random
 
+from collections import OrderedDict
 from robotpt_common_utils import lists, math_tools, strings
 from interaction_engine.text_populator.base_populator import BasePopulator
 
@@ -16,6 +17,7 @@ class VarietyPopulator(BasePopulator):
             self,
             files,
             wild_card_symbol='*',
+            allow_duplicates=True
     ):
         super().__init__(
             main_tags=self.Tags.MAIN,
@@ -25,8 +27,11 @@ class VarietyPopulator(BasePopulator):
             ]
         )
 
-        self._variations = VarietyPopulator._create_dict(files)
+        self._allow_duplicates = allow_duplicates
+        self._variations = VarietyPopulator._create_dict(files, allow_duplicates=self._allow_duplicates)
         self._wild_card_symbol = wild_card_symbol
+        for line in self._variations["introduce task"]:
+            print(line)
 
     def get_replacement(
             self,
@@ -68,16 +73,17 @@ class VarietyPopulator(BasePopulator):
     def _create_dict(
         files,
         variations_dict=None,
+        allow_duplicates=True
     ):
         files = lists.make_sure_is_iterable(files)
         for f in files:
             with open(f) as variation_file:
-                new_dict = json.load(variation_file)
-                variations_dict = VarietyPopulator._combine_dicts(variations_dict, new_dict)
+                new_dict = json.load(variation_file, object_hook=OrderedDict)
+                variations_dict = VarietyPopulator._combine_dicts(variations_dict, new_dict, allow_duplicates)
         return variations_dict
 
     @staticmethod
-    def _combine_dicts(dict1, dict2):
+    def _combine_dicts(dict1, dict2, allow_duplicates):
         if dict1 is None:
             dict1 = {}
         if dict2 is None:
@@ -86,10 +92,16 @@ class VarietyPopulator(BasePopulator):
             if key2 in dict1:
                 list1 = lists.make_sure_is_iterable(dict1[key2])
                 list2 = lists.make_sure_is_iterable(dict2[key2])
-                dict1[key2] = VarietyPopulator._combine_lists_without_duplicates(list1, list2)
+                if allow_duplicates:
+                    dict1[key2] = [list1, list2]
+                else:
+                    dict1[key2] = VarietyPopulator._combine_lists_without_duplicates(list1, list2)
             else:
                 list2 = lists.make_sure_is_iterable(dict2[key2])
-                dict1[key2] = VarietyPopulator._combine_lists_without_duplicates([], list2)
+                if allow_duplicates:
+                    dict1[key2] = list2
+                else:
+                    dict1[key2] = VarietyPopulator._combine_lists_without_duplicates([], list2)
         return dict1
 
     @staticmethod
