@@ -30,8 +30,6 @@ class VarietyPopulator(BasePopulator):
         self._allow_duplicates = allow_duplicates
         self._variations = VarietyPopulator._create_dict(files, allow_duplicates=self._allow_duplicates)
         self._wild_card_symbol = wild_card_symbol
-        for line in self._variations["introduce task"]:
-            print(line)
 
     def get_replacement(
             self,
